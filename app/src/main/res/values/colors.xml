@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorAccent">#FEC109</color>
+
+    <color name="text_black">#111111</color>
+    <color name="text_gray">#4C5957</color>
+    <color name="hp_background">#B8AF5B</color>
+    <color name="attack_background">#8F8101</color>
+    <color name="defense_background">#AFCDF3</color>
+    <color name="speed_background">#F3DB03</color>
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
