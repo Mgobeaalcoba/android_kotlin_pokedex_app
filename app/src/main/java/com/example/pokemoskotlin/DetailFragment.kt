@@ -1,6 +1,7 @@
 package com.example.pokemoskotlin
 
 import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -79,5 +80,8 @@ class DetailFragment : Fragment() {
         attackText.text = getString(R.string.attack_format, pokemon.attack)
         defenseText.text = getString(R.string.defense_format, pokemon.defense)
         speedText.text = getString(R.string.speed_format, pokemon.speed)
+
+        val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+        mediaPlayer.start()
     }
 }

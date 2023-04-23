@@ -8,6 +8,7 @@ Algunos de los temas trabajados en esta app son:
 - Manejo de excepciones, errores de carga y tiempo de carga con loading wheels para uso de Glide
 - Recyclers Views & Adapters
 - Permisos en AndroidManifest
+- Menejo y reproducción de sonidos con "raw" (android resource) & MediaPlayer
 
 
 <br>

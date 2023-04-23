@@ -497,6 +497,181 @@ La primera que hagamos click sobre un pokemon va a tardar un poco dado que desca
 
 10- Si quiero manejar también la posibilidad de que la descarga falle porque la url era incorrecta entonces debemos hacer una modificación... Quitamos al final el ".into(imageView)" y agregamos ".error(R.drawable.ic_image_not_supported_black).into(imageView)"
 
+Así queda entonces nuestro codigo del DetailFragment con la implementación completa de Glide, manejo de carga, errores y excepciones: 
+
+```kotlin
+class DetailFragment : Fragment() {
+
+    private lateinit var imageView: ImageView
+    private lateinit var hpText: TextView
+    private lateinit var attackText: TextView
+    private lateinit var defenseText: TextView
+    private lateinit var speedText: TextView
+    private lateinit var loadingWheel: ProgressBar
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = FragmentDetailBinding.inflate(inflater)
+
+        imageView = view.fragmentDetailImage
+        hpText = view.fragmentDetailHp
+        attackText = view.fragmentDetailAttack
+        defenseText = view.fragmentDetailDefense
+        speedText = view.fragmentDetailSpeed
+        loadingWheel = view.loadingWheel
+
+        return view.root
+    }
+
+    fun setPokemonData(pokemon: Pokemon) {
+
+        loadingWheel.visibility = View.VISIBLE
+        // Podemos usar this, porque Glide admite fragments:
+        Glide.with(this).load(pokemon.imageUrl)
+            .listener(object: RequestListener<Drawable>{
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    imageView.setImageResource(R.drawable.ic_image_not_supported_black)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    return false
+                }
+            })
+            .error(R.drawable.ic_image_not_supported_black)
+            .into(imageView)
+
+        hpText.text = getString(R.string.hp_format, pokemon.hp)
+        attackText.text = getString(R.string.attack_format, pokemon.attack)
+        defenseText.text = getString(R.string.defense_format, pokemon.defense)
+        speedText.text = getString(R.string.speed_format, pokemon.speed)
+    }
+}
+```
+
+------------------------------
+
+**Picasso:** 
+
+Picasso es otra de las librerías más utilizadas en Android para descargar fotos fácilmente.
+
+Puedes encontrar la documentación de la librería aquí: https://square.github.io/picasso/
+
+-------------------------------
+
+Ahora vamos a aprender a agregar sonidos para nuestros pokemones. En realidad vamos a aprender a agregar sonidos a  cualquier aplicación con esto: 
+
+1- Vamos "res", botón derecho, New, Android Resource Directory y en resource type vamos a seleccionar "raw" y le dejamos ese mismo nombre que viene por default. 
+
+2- En la carpeta raw es donde van a estar los sonidos. 
+
+3- Lleno la carpeta raw con todos los sonidos que necesito para mis pokemones. Esto se puede hacer directamente pegandolos (ctrl+v) dentro de la carpeta "raw". 
+
+4- Para poder obtener los sonidos de un pokemon debemos hacerlo igual que como hacemos con los dibujos, es decir, desde R.raw.nombre_sonido
+
+5- Sumo el atributo sonido de tipo Int en mi clase pokemon y luego en DetailFragment, en el metodo setPokemonData() {} es donde vamos a ejecutar ese sonido. 
+
+6- Para esto vamos a tener que crear una val mediaPlayer
+
+7- Una completa la variable vamos poner mediaPlayer.start() y eso hará que se reproduzca el sonido al seleccionar un pokemon de la lista. 
+
+Veamos entonces como queda el codigo del DetailActivity: 
+
+```kotlin
+class DetailFragment : Fragment() {
+
+    private lateinit var imageView: ImageView
+    private lateinit var hpText: TextView
+    private lateinit var attackText: TextView
+    private lateinit var defenseText: TextView
+    private lateinit var speedText: TextView
+    private lateinit var loadingWheel: ProgressBar
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = FragmentDetailBinding.inflate(inflater)
+
+        imageView = view.fragmentDetailImage
+        hpText = view.fragmentDetailHp
+        attackText = view.fragmentDetailAttack
+        defenseText = view.fragmentDetailDefense
+        speedText = view.fragmentDetailSpeed
+        loadingWheel = view.loadingWheel
+
+        return view.root
+    }
+
+    fun setPokemonData(pokemon: Pokemon) {
+
+        loadingWheel.visibility = View.VISIBLE
+        // Podemos usar this, porque Glide admite fragments:
+        Glide.with(this).load(pokemon.imageUrl)
+            .listener(object: RequestListener<Drawable>{
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    imageView.setImageResource(R.drawable.ic_image_not_supported_black)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    return false
+                }
+            })
+            .error(R.drawable.ic_image_not_supported_black)
+            .into(imageView)
+
+        hpText.text = getString(R.string.hp_format, pokemon.hp)
+        attackText.text = getString(R.string.attack_format, pokemon.attack)
+        defenseText.text = getString(R.string.defense_format, pokemon.defense)
+        speedText.text = getString(R.string.speed_format, pokemon.speed)
+
+        val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+        mediaPlayer.start()
+    }
+}
+```
+
+-------------------------------
+
+**Agregando soporte para Fragment Navigation:**
+
+
+
 
 
 
