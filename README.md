@@ -4,6 +4,17 @@ Algunos de los temas trabajados en esta app son:
 
 - Construcción de una app usando Fragments
 
+
+<br>
+
+<div style="display:flex;">
+  <img src="images/pokedex_1.png" alt="Captura 1" style="margin-right:10px; max-width:50%; height: auto;">
+  <img src="images/pokedex_2.png" alt="Captura 2" style= "max-width:50%; height: auto;">
+</div>
+
+<br>
+<br>
+
 ## Instalación
 
 Instala la aplicación con los siguientes pasos:

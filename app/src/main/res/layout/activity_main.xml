@@ -11,17 +11,17 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/detail_fragment"
             android:name="com.example.pokemoskotlin.DetailFragment"
             android:layout_width="match_parent"
-            android:layout_height="250dp" />
+            android:layout_height="wrap_content" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/list_fragment"
             android:name="com.example.pokemoskotlin.ListFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/detail_fragment"
             android:layout_alignParentBottom="true"/>
 
