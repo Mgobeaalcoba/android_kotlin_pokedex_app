@@ -4,7 +4,8 @@ Algunos de los temas trabajados en esta app son:
 
 - Construcción de una app usando Fragments
 - Comunicación entre fragments mediada por la activity
-- Uso de Glade para importar fotos desde la web
+- Uso de Glide para importar fotos desde la web
+- Manejo de excepciones, errores de carga y tiempo de carga con loading wheels para uso de Glide
 - Recyclers Views & Adapters
 - Permisos en AndroidManifest
 

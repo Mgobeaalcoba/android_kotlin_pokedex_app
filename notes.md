@@ -471,6 +471,33 @@ https://github.com/bumptech/glide
  <uses-permission android:name="android.permission.INTERNET" />
 ```
 
+La primera que hagamos click sobre un pokemon va a tardar un poco dado que descarga la imagen. Pero una vez que la tenemos descargada la misma queda en la cache por lo que luego si volvemos a seleccionar el mismo pokemon no tendremos problemas de demora. 
+
+-------------------------
+
+**Manejando "carga" y errores en Glade:** 
+
+1- Vamos a ir a donde estamos implementando Glide. En este caso al DetailFragment en su metodo setPokemonData() {}
+
+2- Vamos a reemplazar el ".into(imageView) por .listener(object: RequestListener< Drawable >{}).into(imageView)
+
+3- Me marcará en rojo "object" y si posiciono en el me sugerirá "implementar miembros". Son dos metodos de la interface RequestListener los que debo implementar para luego editar. 
+
+4- El primer metodo va a aplicar cuando falle la carga de nuestra imagen. El segundo metodo va a aplicar cuando termine de cargarse la imagen finalmente. 
+
+5- Entonces aprovechando el segundo metodo voy a ir al fragment_layout.xml y voy a meter a mi ImageView dentro de un FrameLayout donde va a convivir con una ProgressBar y se mostrará esta ultima hasta tanto la imagen esté cargada. Cuando esto ultimo ocurra voy a ocultar la progress bar y voy a mostrar la image view. 
+
+6- Voy a crear mi private lateinit var loadingWheel en mi DetailFragment.kt y luego voy a inicializarla en el onCreateView()
+
+7- Entonces apenas invocamos a setPokemonData(), es decir, cuando queremos cargar una imagen vamos a cambiar la visibilidad de loadingWheel de GONE a VISIBLE y luego, cuando termina la carga ( onResourceReady() ) vamos a volver a ocultarla. Si la descarga falló también la ocultamos de nuevo. 
+
+8- onLoadFailed & onResourceReady te piden que devuelvas un boolean para hacer mas cosas con target, pero por el momento no las vamos a hacer. Por lo que vamos a retornar un false para que compile en ambos metodos sobre escritos. 
+
+9- Adicionalmente, cuando la descarga falle, POR UNA EXCEPCION, vamos a mostrar una imagen por default para estos casos.
+
+10- Si quiero manejar también la posibilidad de que la descarga falle porque la url era incorrecta entonces debemos hacer una modificación... Quitamos al final el ".into(imageView)" y agregamos ".error(R.drawable.ic_image_not_supported_black).into(imageView)"
+
+
 
 
 
