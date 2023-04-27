@@ -132,6 +132,105 @@ Así quedaría nuestro activity_main.xml
 </layout>
 ```
 
+Vamos a crear nuestro recyclerview y lo vamos a hacer en nuestro ListFragment. 
+
+**IMPORTANTE: Todo lo que hacemos en la activity a nivel de onCreate(), lo vamos a hacer en el fragment a nivel de onCreateView()**
+
+--------------------------
+
+**Soporte para fragment navigatión**
+
+Dependencias en Kotlin: 
+
+```kotlin
+implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+```
+
+Tambien debemos sumar un Safe Args en el build.gradle (Top level) es decir, el de project. No el de app. Así quedaría el build.gradle (project)
+
+```kotlin
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        def nav_version = "2.5.3"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
+    }
+}
+plugins {
+    id 'com.android.application' version '7.4.2' apply false
+    id 'com.android.library' version '7.4.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+}
+```
+
+Finalmente debemos sumar un plugin (id 'androidx.navigation.safeargs.kotlin') a nuestro build.gradle(app). El mismo es: 
+
+```kotlin
+plugins {
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+```
+---------------------------
+
+**¿Que vamos a hacer ahora con "navigatión" instalado en Android Studio? **
+
+Quitar el fragment de la parte superior de la activity y ponerlo en una activy nueva para mostrarlo separado.
+
+Creo un nuevo fragment al que voy a llamar "PokemonDetailFragment" pero voy a dejar aún y para que sirva de ejemplo a otros projectos el "DetailFragment" que ya no voy a usar. 
+
+RECORDATORIO: Del fragment que viene por default solo me voy a quedar con el metodo onCreateView(), el resto elimino todo. 
+
+Luego, vamos a crear en "res" un New -> Android Resource Directory. En resource type vamos a seleccionar "navigation". Lo que va a configurar con el mismo nombre a esta carpeta. 
+
+En la carpeta de navigation vamos a crear el archivo **main_nav_graph**
+
+Dentro del archivo de navigation voy a establecer los dos fragment (podrían ser activities tambien) que van a estar conectados en mi navegación de forma visual a traves de la sección "Design".
+
+Voy a establecer una relación entre "listFragment" y "pokemonDetailFragment" a traves de un vinculo lineal entre ambos fragments. 
+
+Podemos ir y ver el codigo que se generó con este diseño. Pero en este caso es claramente mas facil hacerlo directamente desde design: 
+
+Codigo: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.pokemoskotlin.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonDetailFragment"
+        android:name="com.example.pokemoskotlin.PokemonDetailFragment"
+        android:label="fragment_pokemon_detail"
+        tools:layout="@layout/fragment_pokemon_detail" />
+</navigation>
+```
+
+Diseño: 
+
+<img src="images/navigation-design.png" alt="Creación desde navigation">
+
+
+
 
 
 
