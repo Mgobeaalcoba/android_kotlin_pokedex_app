@@ -670,21 +670,6 @@ class DetailFragment : Fragment() {
 
 **Agregando soporte para Fragment Navigation:**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Vamos a crear nuestro recyclerview y lo vamos a hacer en nuestro ListFragment. 
 
 **IMPORTANTE: Todo lo que hacemos en la activity a nivel de onCreate(), lo vamos a hacer en el fragment a nivel de onCreateView()**
@@ -780,7 +765,7 @@ Codigo:
 
 Diseño: 
 
-<img src="images/navigation-design.png" alt="Creación desde navigation">
+<img src="images/navigation-design.PNG" alt="Creación desde navigation">
 
 
 
