@@ -3,6 +3,23 @@
 Algunos de los temas trabajados en esta app son: 
 
 - Construcción de una app usando Fragments
+- Comunicación entre fragments mediada por la activity
+- Uso de Glide para importar fotos desde la web
+- Manejo de excepciones, errores de carga y tiempo de carga con loading wheels para uso de Glide
+- Recyclers Views & Adapters
+- Permisos en AndroidManifest
+- Menejo y reproducción de sonidos con "raw" (android resource) & MediaPlayer
+
+
+<br>
+
+<div style="display:flex;">
+  <img src="images/pokedex_1.png" alt="Captura 1" style="margin-right:10px; max-width:50%; height: auto;">
+  <img src="images/pokedex_2.png" alt="Captura 2" style= "max-width:50%; height: auto;">
+</div>
+
+<br>
+<br>
 
 ## Instalación
 
