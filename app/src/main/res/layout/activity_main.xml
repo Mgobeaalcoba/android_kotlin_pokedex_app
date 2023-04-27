@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,19 +12,14 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <fragment
-            android:id="@+id/detail_fragment"
-            android:name="com.example.pokemoskotlin.DetailFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <fragment
-            android:id="@+id/list_fragment"
-            android:name="com.example.pokemoskotlin.ListFragment"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/main_navigation_container"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/detail_fragment"
-            android:layout_alignParentBottom="true"/>
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/main_nav_graph"
+            />
 
     </RelativeLayout>
 </layout>
