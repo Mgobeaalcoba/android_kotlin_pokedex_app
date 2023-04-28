@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -26,7 +27,7 @@ class PokemonDetailFragment : Fragment() {
     private lateinit var defenseText: TextView
     private lateinit var speedText: TextView
     private lateinit var loadingWheel: ProgressBar
-    private lateinit var nameText: TextView
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     private val args: PokemonDetailFragmentArgs by navArgs()
     override fun onCreateView(
@@ -45,10 +46,15 @@ class PokemonDetailFragment : Fragment() {
         speedText = view.fragmentDetailSpeed
         loadingWheel = view.loadingWheel
 
-        nameText = view.fragmentDetailName
+        toolbar = view.detailToolbar
 
         // Seteo el nombre de mi nueva view acá y mando a llamar setPokemonData con el pokemon que me traigo de navigation
-        nameText.text = pokemon.name
+        toolbar.title = pokemon.name
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
+        toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         // Seteo el resto de los datos de mi fragment con el metodo que tengo abajo.
         setPokemonData(pokemon)
 

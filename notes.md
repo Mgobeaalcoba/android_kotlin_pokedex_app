@@ -1155,7 +1155,179 @@ Quedaría así:
 
 </layout>
 ```
-Luego vamos a hacer lo mismo en el fragment pokemon detail layout pero sin title en esta ocasión...
+
+Luego vamos a hacer lo mismo en el fragment pokemon detail layout pero sin title en esta ocasión... La diferencia en este caso es que lo vamos a sumar con id para luego poder identificarlo y modificarlo en nuestro PokemonDetailFragment.kt
+
+Queda así el layout de fragment_pokemon_detail.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".DetailFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            app:titleTextColor="@color/white"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/fragment_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/pokedex" />
+
+            <ProgressBar
+                android:id="@+id/loading_wheel"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fragment_detail_hp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/hp_background"
+                style="@style/StatText"
+                tools:text="Hp 45" />
+
+            <TextView
+                android:id="@+id/fragment_detail_attack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/attack_background"
+                style="@style/StatText"
+                tools:text="Attack 48" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fragment_detail_defense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/defense_background"
+                style="@style/StatText"
+                tools:text="Defense 43" />
+
+            <TextView
+                android:id="@+id/fragment_detail_speed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/speed_background"
+                style="@style/StatText"
+                tools:text="Speed 80" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/fragment_detail_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            tools:text="Bulbasaur"
+            />
+
+    </LinearLayout>
+
+</layout>
+```
+
+Y luego en el archivo PokemonDetailFragment ya no vamos a mostrar mas el nombre del pokemon en el TextView donde lo haciamos sino en el toolbar...
+
+Ademas le vamos a agregar la flecha para volver para atras a nuestro toolbar así no es necesario usar la flecha del OS para hacer esto. 
+
+En Drawable / New / Vector Asset y busco en Clip Art la flecha para volver atras. luego le doy finish. 
+
+La seteo con un color blanco que sería #FFFFFF y le doy un nombre que la identifique
+
+Una vez que ya le tenemos vamos a poner en nuestro archivo Kotlin del fragment lo siguiente: 
+
+```kotlin
+toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
+toolbar.setNavigationOnClickListener {
+    requireActivity().onBackPressed()
+}
+```
+
+------------------------------
+
+**Seguimos dandole funcionalidades y diseño a nuestros fragment. En este caso vamos a usar un CollapsingToolbarLayout para que cuando scroleemos hacia abajo en el detail podamos ver como el toolbar y la foto van desapareciendo progresivamente.**
+
+1- Vamos al fragment_pokemon_layout.xml
+
+2- Encerramos todo nuestro layout existente en un CoordinatorLayout
+
+3- Copiamos y pegamos todos los elementos que lleva el LinearLayout Padre por el momento y cerramos el CoordinatorLayout al final del layout. 
+
+4- Ya no necesitamos la referencia al fragment en el Linear Layout por lo que puedo quitarlo. 
+
+5- Saco el orientation del CoordinatorLayout dado que no es necesario en el mismo y defino alto y ancho como "match_parent". 
+
+6- Dentro del CoordinatorLayout voy a crear un AppBarLayout match_parent, wrap_content y tiene que tener un theme definido que en este caso es uno de los que vienen por defecto: ThemeObverlay...
+
+7- Este AppBarLayout a su vez va a tener dentro un CollapsinToolbarLayout match_parent, wrap_content. Este es el que va a darnos el movimiento, es decir, el scroll y acá tenemos otras opciones que deberiamos probar todas.
+
+8- En este caso yo le voy a sumar con "|" dentro de la categoria layout_scrollFlags la de "scroll|exitUntilCollapsed"
+
+9- Este CollapsinToolbarLayout tambien debe llevar otro parametro que se llama: app:contentScrim="@color/colorPrimary" que va a establecer el color que se ve al expandir y contraer nuestro CollapsinToolbarLayout. 
+
+10- Luego tenemos que meter dentro del CollapsinToolbarLayout todo aquello que se va a expandir y contraer frente a nuestro scroll. En este caso sería el Toolbar, el imageView que tiene la imagen del pokemon y el ProgressBar que se usa para cuando carga la foto. 
+
+11- Entonces corto y pego el FrameLayout que tiene el image view y el progress bar dentro de nuestro Collapsin...Lo mismo hago con el toolbar. 
+
+12- Vamos a notar en nuestra representación grafica que parece que todo se está arrunando. QUE NO DECAIGA. PRONTO vamos a darle orden...
+
+13- En el Toolbar, el background ya no lo necesitamos dado que el color nos lo va a dar el App:contentScrim="@color/colorPrimary" de nuestro CollpsingToolbarLayout, el elevatión también nos lo va a dar el CoordinatorLayout por lo que lo sacamos también, el textColor también lo sacamos dado que nos lo va a dar el theme del AppBarLayout y finalmente al height de nuestro toolbar lo vamos a cambiar de wrap_content (podría quedar así tranquilamente igual) por un atributo que es el tamaño por defecto de un toolbar para Android. "?attr/actionBarSize"
+
+14- Vamos a agregar al final de nuestro LinearLayout que sería la parte de abajo que no se contrae, un TextView para insertar un texto largo que es la descripción del pokemon, con el fin de que podamos scrolear en el mismo. Por ejemplo podemos ponerles el "lorem ipsus
+
+15- Todo el LinearLayout que tenemos debajo de nuestro AppBarLayout vamos a meterlo dentro de un NestedScrollView para arreglar la visualización que tenemos previa y para que funcione correctamente nuestra app. El parametro clave del NestedScrollView para que se reorganicen como deben los elementos en la visualización previa y en la app funcionando es: 
+**app:layout_behavior="@string/appbar_scrolling_view_behavior"**
+
+16- Finalmente, para que la flecha no colapse cuando colapsa el resto debemos agregarle al Toolbar: 
+app:layout_collapseMode="pin"
+
+**IMPORTANTE: Para que la toolbar se vea y no quede tapada por la imagen y o progres bar debe ir debajo de los mismos en el CollapsingToolbarLayout. Caso contrario no se va a a ver pero si apretan donde debería estar va a tener la función.** 
+
+
+
 
 
 
