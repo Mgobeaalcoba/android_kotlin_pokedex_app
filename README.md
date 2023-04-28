@@ -18,7 +18,7 @@ Algunos de los temas trabajados en esta app son:
   <img src="images/new_pokedex_2.png" alt="Captura 2" style= "max-width:50%; height: auto;">
 </div>
 
-<br>
+
 <br>
 
 ## Instalación
