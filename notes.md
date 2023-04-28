@@ -767,6 +767,226 @@ Diseño:
 
 <img src="images/navigation-design.PNG" alt="Creación desde navigation">
 
+Para que esto funcione, debemos quitar los dos fragment del layout de MainActivity. Y lo vamos a reemplazar por un **FragmentContainerView**. Quedaría así el MainActivity: 
+
+```kotlin
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/main_navigation_container"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/main_nav_graph"
+            />
+
+    </RelativeLayout>
+</layout>
+```
+
+Luego vamos a ir a el fragment_pokemon_detail.xml y vamos a pegar lo mismo que tenemos en el fragment_detail.xml...
+
+--------------------------------------
+
+**¿Como pasar datos entre fragments utilizando navigation?**
+
+1- En el list fragment escuchamos los click sobre nuestra lista. Y cuando se produce pasamos los datos al detail fragment mediante el main activity. Esto ya no lo vamos a hacer mas. 
+
+2- Reemplazo en el onPokemonSelected() del main activity lo que borre en el punto 1 con: 
+findNavController(R.id.main_navigation_container).navigate(ListFragmentDirections.actionListFragmentToPokemonDetailFragment()). 
+Con esto ya se abré el siguiente fragment pero áun no le estamos pasando los datos. 
+
+3- En Android, pasar datos de un fragment a otro sae conoce como: **pasar argumentos**. Los safe args que agregamos al instalar navigation son los argumentos, es decir, son los datos que pasamos de un fragment a otro. 
+
+4- Dentro de main_nav_graph bajo la modalidad de design voy a seleccionar el fragment de destino de los arguments e ir a la sección de la derecha que dice "Arguments". Allí voy apretar sobre el signo "+" para agregar un argumento. 
+
+5- Vamos a cargar el primer argumento: 
+Name: pokemonName
+Type: string.
+Luego voy a ir a la sección de codigo y voy a cargar en el argument que se genero un android:defaultValue=""
+Esto para que no trone la aplicación en caso de que se nos olvide pasarlos. 
+
+6- Vamos a ir ahora a PokemonDetailFragment y allí es donde vamos a recibir los argumentos. Alli:
+Agrego:
+private val args: PokemonDetailFragment by navArgs()
+
+IMPORTANTE: Si fallá debo ir a build.gradle (app) y agregar:
+
+```kotlin
+kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+}
+```
+
+Luego inflo el layout con dataBinding(Puede ser también sin el mediante R.layout.{name_layout}) y guardo el layout en una variable llamada view y luego la retorno desde onCreateView con su metodo .root
+
+7- Voy a crear una variable llamada pokemonName = args.pokemonName
+
+8- Voy a crear en el Layout del Fragment (fragment_pokemon_detail) una TextView para mostrar el nombre del pokemon que estoy pasando. 
+
+9- Volvemos al fragment y vamos a identificar a esta view que acabamos de crear. Yo lo voy a hacer con dataBinding, pero también se puede hacer con findViewById.
+
+10- Una vez hecho esto vamos pasar como .text del nameText que acabamos de crear el pokemonName que creamos en el punto 7. Y con esto ya estariamos mostrando los datos en el fragment de destino. Pero... Aún no los estamos enviando del primer fragment. Por lo que debemos hacer algunas cosas mas. 
+
+11- Dentro del MainActivity en la función de onPokemonSelected(pokemon: Pokemon) {}
+vamos a pasarle en el parentesis vacio que teniamos del "actionListFragmentToPokemonDetailFragment({args... // los mismos salen del objeto que recibe}). Por ejemplo en este caso sería el pokemon.name
+
+12- Hecho esto deberíamos ver que se pasa el nombre al segundo fragment.
+
+13- Si bien podemos pasar los distintos atributos del pokemon de forma individual tal como lo hicimos con pokemonName podemos también pasar un objeto completo. En este caso un pokemon. Para eso debemos editar el **argument que se nos generó en el main_nav_graph.xml** y quitamos el defaultValue
+
+14- Vamos a hacer esto:
+```xml
+<argument
+    android:name="pokemon"
+    app:argType="com.example.pokemoskotlin.Pokemon"/>
+```
+15- Como recordaremos, para pasar un objeto de una activity a otra se necesita un @Parcelize en la clase de ese objeto. Eso vamos a hacer con nuestra clase Pokemon. Quedando así: 
+
+```kotlin
+@Parcelize
+data class Pokemon(val id: Long, val name: String, val hp: Int, val attack: Int, val defense: Int,
+                   val speed: Int, val type: PokemonType, val imageUrl: String, val soundId: Int) :
+    Parcelable {
+
+    enum class PokemonType {
+        GRASS, FIRE, WATER, FIGHTER, ELECTRIC
+    }
+}
+```
+16- Ahora cambiamos en el MainActivity dentro del metodo onPokemonSelected y en lugar de pasar un "pokemon.name" vamos a pasar un "pokemon" solo. 
+
+17- modificamos el archivo de PokemonDetailFragment dado que antes recibiamos un pokemonName y mostrabamos un nombre y ahora es un objeto. 
+
+18- Copiamos y pegamos el metodo del DetailFragment llamado setPokemonData en el PokemonDetailFragment
+
+19- Configuro el metodo copiado como privado dado que solo va a ser llamado desde este mismo fragment. 
+
+20- Vuelvo a DetailFragment y busco todas las private lateinit var para que el metodo copiado pueda servirse de ellas. 
+
+21- Copiamos y pegamos tambien del DetailFragment todas las asignaciónes de las variables que estaban dentro del onCreateView.
+
+**22- Asignamos en onCreateView el valor del nameText que es la nueva View que antes no teniamos. Y para asignar todas las demas view usamos el metodo setPokemonData pasandole el pokemon que me traigo desde navigation**
+
+Así queda entonces mi PokemonDetailFragment: 
+
+```kotlin
+package com.example.pokemoskotlin
+
+import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.example.pokemoskotlin.databinding.FragmentPokemonDetailBinding
+
+class PokemonDetailFragment : Fragment() {
+
+    private lateinit var imageView: ImageView
+    private lateinit var hpText: TextView
+    private lateinit var attackText: TextView
+    private lateinit var defenseText: TextView
+    private lateinit var speedText: TextView
+    private lateinit var loadingWheel: ProgressBar
+    private lateinit var nameText: TextView
+
+    private val args: PokemonDetailFragmentArgs by navArgs()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = FragmentPokemonDetailBinding.inflate(inflater)
+
+        val pokemon = args.pokemon
+
+        imageView = view.fragmentDetailImage
+        hpText = view.fragmentDetailHp
+        attackText = view.fragmentDetailAttack
+        defenseText = view.fragmentDetailDefense
+        speedText = view.fragmentDetailSpeed
+        loadingWheel = view.loadingWheel
+
+        nameText = view.fragmentDetailName
+
+        // Seteo el nombre de mi nueva view acá y mando a llamar setPokemonData con el pokemon que me traigo de navigation
+        nameText.text = pokemon.name
+        // Seteo el resto de los datos de mi fragment con el metodo que tengo abajo.
+        setPokemonData(pokemon)
+
+        return view.root
+    }
+
+    private fun setPokemonData(pokemon: Pokemon) {
+
+        loadingWheel.visibility = View.VISIBLE
+        // Podemos usar this, porque Glide admite fragments:
+        Glide.with(this).load(pokemon.imageUrl)
+            .listener(object: RequestListener<Drawable> {
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    imageView.setImageResource(R.drawable.ic_image_not_supported_black)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    return false
+                }
+            })
+            .error(R.drawable.ic_image_not_supported_black)
+            .into(imageView)
+
+        hpText.text = getString(R.string.hp_format, pokemon.hp)
+        attackText.text = getString(R.string.attack_format, pokemon.attack)
+        defenseText.text = getString(R.string.defense_format, pokemon.defense)
+        speedText.text = getString(R.string.speed_format, pokemon.speed)
+
+        val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+        mediaPlayer.start()
+    }
+}
+```
+
+**Y... así es como se pasan datos entre fragments usando navigation**
+
+
 
 
 

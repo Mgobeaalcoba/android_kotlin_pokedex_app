@@ -17,5 +17,9 @@
         android:id="@+id/pokemonDetailFragment"
         android:name="com.example.pokemoskotlin.PokemonDetailFragment"
         android:label="fragment_pokemon_detail"
-        tools:layout="@layout/fragment_pokemon_detail" />
+        tools:layout="@layout/fragment_pokemon_detail" >
+        <argument
+            android:name="pokemon"
+            app:argType="com.example.pokemoskotlin.Pokemon" />
+    </fragment>
 </navigation>
