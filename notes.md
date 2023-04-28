@@ -1531,6 +1531,114 @@ FIN DE LA PARTE DE DISEÑO.
 
 ------------------------------------
 
+¿Como publicar nuestras apps en Android? 
+
+1- Completar el registro en Play Console desde acá: https://support.google.com/googleplay/android-developer/answer/6112435?hl=es-419#zippy=%2Cpaso-reg%C3%ADstrate-para-obtener-una-cuenta-de-desarrollador-de-google-play 
+
+2- El mismo cuesta USD 25 pero es un valor que se paga para toda la vida. En IOS se pagan USD 100 dolares anuales para poder subir aplicaciones. 
+
+3- Debemos crear nuestro archivo Bundle que es el archivo para firmar nuestras aplicaciones. 
+
+4- En Android Studio vamos a Build / Generate Signed Bundle or APK y ahí tenemos dos opciones. APK es el descargable con el cual podemos compartir la aplicación. Bundle es mas optimo para descargar una App desde el lado de la experiencia de usuario. 
+
+5- Selecciono Bundle.
+
+6- Por default Module se establece con el nombre de nuestra .app
+
+7- Key store path es un archivo que te permite darle seguridad a tu app para solo quienes posean el mismo puedan crear Boundle de tu app. 
+
+8- Creamos uno nuevo, seleccionamos un path donde guardar el Key store y vamos a crear un password
+
+9- Luego nos pedirá un nombre para nuestra key que en general es el nombre de la app para diferenciarlo con otras aplicaciones. 
+
+10- Completamos el key store cada vez que subamos una version de nuestra app. Pero las veces que siguen solo debemos seleccinaor el key-store que del que ya creamos. 
+
+11- Luego del next vamos a seleccionar "release" que es la versión que va a producción. 
+
+12- Seleccionamos Create y eso nos genera nuestro Bundle. 
+
+13- Nos aparece luego de generado una notificaion con un "locate" que debemos apretar para encontrar el Bundle
+
+---------------------------------
+
+**Subir la aplicación a Play Store**
+
+1- Creado el Bundle vamos a la Play Console
+
+2- Ponemos "Crear aplicación"
+
+3- Ponemos nombre, idioma, juego o aplicación y si es gratis o de pago, 
+
+4- Tenemos que aceptar las declaraciones y y luego me va a mostrar las aplicaciones que tengo disponibles y de las que soy el creador.  
+
+5- Allí podemos ver estadisticas sobre el uso, adopción, churn, etc de nuestra app.
+
+6- En la sección de Producción nos aparecen estadisticas pero solo de la ultima versión que acabamos de subir de nuestra app. 
+
+7- Para crear una nueva versión vamos a "Crear versión" y lo primero que nos pide es que arrastremos el Bundles o APK a esa sección
+
+8- Mas abajo te muestra la vesión que se va a remover con la nueva versión que vamos a subir. Podemos subir versiones posteriores o anteriores incluso también si es que detectamos alguna falla que nos obligue a sacar a nuestra release de la APP de funcionamiento. 
+
+9- Por ultimo debajo se pueden agregar las "notas de la versión" que no es mas que la descripción de la versión que se lee desde la play store al ingresar a una app. Se puede insertar las notas en varios idiomas usando los tags destinados para tal fines.
+
+10- Luego de eso nos va a advertir los errores y advertencias que nuestra versión que estamos queriendo subir vaya a tener antes de estar disponible en play store. 
+
+11- También podemos configurar un lanzamiento progresivo desde el "porcentaje de lanzamiento" para hacer un upgrade progresivo de la nueva versión y testear si tenemos problemas. 
+
+12- Luego apretamos el botón "Iniciar lanzamiento a Producción" y el proceso de carga va a llevar entre 3 y 4 horas (En algunas ocasiones excepcionales puede llegar a tardar algunos días). El famoso "deploy". 
+
+-------------------------------------
+
+Falta un paso mas para poder publicar la app en Play Store y es ir a Presencia en Google Play Store en el menú lateral izquierdo de Play Console. 
+
+1- Seleccionamos dentro del menu Ficha de Play Store Principal
+
+2- Completamos los datos esenciales que nos pide sobre la app. Nombre de la app, descripción breve, descripción completa (hasta 4000 palabras), el icono de nuestra app, grafico de funciones es un banner para el fondo de Google Play Store, capturas de la app en celulares, capturas de la app en tablet de 7 y 10 pulgadas, etc, un video que es opcional (puede ser de youtube)
+
+3- Luego vamos a Configuración de la tienda y escogemos nuevamente si es aplicación o juego, a que categoria pertenece (comer por ej), etiquetas, direccion de correo electronico y sitio web donde te pueden contactar. 
+
+4- En producción también tenemos una sección de Paises/regiones donde vamos a poder especificar en que paises queremos que esté disponible nuestra aplicación. 
+
+5- Hay mas cosas que se pueden incluir pero estas son las realmente importantes. 
+
+6- Una vez esté lista la app en Play Store te va a llegar un correo avisando que la misma ya está disponible. Y te va a pedir info adicional sobre tu aplicación incluye drogras, armas, etc para saber si se la muestran a niños o no. 
+
+7- Si una aplicación en Play Store la vemos como (beta) es porque somos testers de esa aplicación. Por lo que podemos probarla antes de que se suba a producción para todo el universo al que pretendemos alcanzar. Luego vemos como sumar testers. 
+
+**Con esto tenemos nuestra aplicación lista en la Play Store para que todo el mundo la comience a descargar.** 
+
+--------------------------------
+
+**Sección de Testing. ¿Como agregar Testers para tu aplicación así prueban las nuevas versiones antes que todo el mundo?**
+
+Tres tipos de Testing:
+
+1- Pruebas internas: Generalmente es para empleados de tu misma empresa. Se pueden poner hasta 100 testers internos. Solo podemos acceder por invitación. Desde crear canal
+
+2- Pruebas cerradas: Modo Alpha. Solo podemos acceder por invitación. Desde crear canal -> Le pongo un nombre al canal y creo una versión tal como hice en producción. Y luego selecciono la lista de correos electronicos a los que quiero llegar.  
+
+3- Pruebas abiertas: Podemos invitar testers también pero esto no lo hacemos con invitaciones por correo sino compartiendo un enlace que podemos poner en nuestra web, red social, etc. Modo Beta.
+
+Si subimos una versión a cualquiera de nuestras versiones de testing ya quedan guardados en nuestra biblioteca y luego podemos pasar esa versión a producción directamente desde la biblioteca. 
+
+----------------------------
+
+**Manejo de versiones de nuestra app:**
+
+Cuando entras a la Play Store o revisas una app en tu celular, podrás ver que tiene una "Version actual"
+
+
+Esta versión también se muestra comúnmente dentro de la app en preferencias. Y sirve para llevar un control de en qué momento se agregó cierta característica o se corrigió cierto error. En Android esta versión la podemos controlar desde el archivo build.gradle (app) aquí:
+
+
+Siempre que subas una nueva versión de tu Bundle a la Play Store tendrás que incrementar estos dos valores "versionCode" y "versionName", si no los incrementas no te permitirá publicar el nuevo Bundle. En cuanto a versionCode simplemente lo puedes incrementar en 1, para el caso de versionName es un poco más de "feeling", ya que no hay una regla establecida, cada empresa lo maneja diferente. Aquí te dejo un artículo de la manera en que a mí me ha funcionado mejor, se llama MAJOR.MINOR.PATCH, te recomiendo revisarlo:
+
+https://hackaprende.com/2020/06/04/la-mejor-manera-de-manejar-la-version-tu-codigo/
+
+Al inicio la actualización de la versión la puedes hacer manualmente sin problemas, pero conforme tu app crezca necesitarás algo llamado Integración Continua para automatizar este paso, aunque por ahora ese es el menor de los problemas, "Cruzaremos ese pueden cuando lleguemos a él".
+
+----------------------------
+
 
 
 
