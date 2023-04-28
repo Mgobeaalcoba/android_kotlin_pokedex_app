@@ -4,4 +4,5 @@
     <string name="attack_format">Attack: %d</string>
     <string name="defense_format">Defense: %d</string>
     <string name="speed_format">Speed: %d</string>
+    <string name="pokedex">Pokedex</string>
 </resources>

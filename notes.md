@@ -986,6 +986,178 @@ class PokemonDetailFragment : Fragment() {
 
 **Y... así es como se pasan datos entre fragments usando navigation**
 
+----------------------------------
+
+## Consejo para la creación de productos: 
+
+**Primero hay que hacerlo valioso, luego ligero, luego facil de usar y finalmente bonito. En ese orden de importancia.**
+
+Link para encontrar colores y diseños para nuestros productos: 
+
+https://m3.material.io/styles/color/the-color-system/key-colors-tones
+
+Aqui vamos a encontrar el manejo teorico de colores para app´s de google. 
+
+El concepto clave es que deben haber tres colores: El Primary Key Color, el Secondary Key Color y el Tertiary Key Color
+
+No se deben usar muchos mas colores que esos para que los colores de la aplicación sean **concistentes** y uno tenga la sensación de que sigue en la misma app. 
+
+Busco y establezco tres colores que tengan que ver con los pokemon´s y los establezco como los primeros tres colores de mi colors.xml: 
+
+```xml
+<resources>
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorAccent">#FEC109</color>
+</resources>
+```
+
+Luego debo revisar si tengo un archivo de styles.xml. Si no lo tengo lo creo dentro de res / values y lo configuro con mis colores establecidos como los primeros para mi app en colors.xml así: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- base apllication theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>
+```
+--------------------------
+
+**¿Que otra cosa podemos hacer en styles?** 
+
+Por ejemplo podemos crear un style, con tipo de letra, tamaño, color, etc y luego invocar el mismo en nuestros layouts, ejemplo: los cuatro cuadrados donde mostramos la info del pokemon. 
+De esta forma no deberíamos repetir las multiples lineas de estilo en cada View sino que simplemente invocamos el style y listo. 
+
+Width, height y weight pese a que en este caso son iguales, no se recomiendan sumar a los estilos. 
+
+Si en style ya tenemos definido un textSize o cualquier otra variable y luego sumamos esa variable a la configuración de nuestra view va a primar el parametro que sumamos en la view por sobre el parametro que configuramos en nuestro style. 
+
+¿Como?
+
+Borro los elementos que pasé a mi style de mi layout. Ejemplo de que borro en mis TextView del fragment_pokemon_detail.xml:
+
+```xml
+android:fontFamily="sans-serif-medium"
+android:gravity="center"
+android:padding="16dp"
+android:textColor="@color/text_black"
+android:textSize="18sp"
+```
+
+y agrego en su lugar: 
+
+```xml
+style="@style/StatText"
+```
+Así debería quedar nuestro styles.xml: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- base apllication theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="StatText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_black</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>
+```
+
+**Los estilos pueden tener un estilo padre. El mismo puede ser un estilo predefinido o un estilo que ya hayamos creado previamente. Esto nos sirve para "heredar" los formatos establecidos. Puede ahorrarnos mucho tiempo si no queremos una app 100% personalizada.** 
+
+---------------------------
+
+**El Toolbar. (o la barrita de arriba de la app que nos muestra el nombre de la misma)**
+
+Esta toolbar se puede editar o se puede ocultar también. La configuración de su aparición o desaparición se hace desde styles.xml. Dentro de parent. 
+
+Si la quiero por ejemplo lo pongo como está arriba y si no la quiero lo configuro así: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- base apllication theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="StatText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_black</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>
+```
+OJO ACÁ: Si tenemos dentro de values una carpeta llamada "themes" la misma va a pisar la config del toolbar de styles.xml por lo que debemos cambiar la misma allí.
+
+En mi caso. Eliminé la carpeta de themes y me quedé solo con mi archivo de styles. Pero si quiero tener dos temas distintos, es util conservar la carpeta de themes y eliminar styles. Lo que no puede suceder es tener ambos. 
+
+Si lo queremos personalizar entonces no debemos agregarlo desde el archivo styles.xml sino que debemos sumarlo al layout en el cual queremos mostrarlo como un View mas. 
+
+Vamos a hacer esto primero en fragment_list que el fragment donde mostramos todo el listado de nuestros pokemones. y lo vamos a agregar allí mismo. 
+
+Solo tenemos un recycler view. Vamos a poner el recycler view dentro de un linear layout vertical y encima del recycler view vamos a colocar un toolbar. 
+
+Quedaría así: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ListFragment"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:title="@string/pokedex"
+            android:elevation="4dp"
+            app:titleTextColor="@color/white"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pokemon_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
+</layout>
+```
+Luego vamos a hacer lo mismo en el fragment pokemon detail layout pero sin title en esta ocasión...
+
+
 
 
 

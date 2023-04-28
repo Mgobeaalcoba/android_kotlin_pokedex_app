@@ -11,7 +11,7 @@
         android:icon="@mipmap/pokedex_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PokemosKotlin"
+        android:theme="@style/PokemosKotlin"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

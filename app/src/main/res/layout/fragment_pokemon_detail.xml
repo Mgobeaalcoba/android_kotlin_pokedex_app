@@ -42,11 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/hp_background"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="16dp"
-                android:textColor="@color/text_black"
-                android:textSize="18sp"
+                style="@style/StatText"
                 tools:text="Hp 45" />
 
             <TextView
@@ -55,11 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/attack_background"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="16dp"
-                android:textColor="@color/text_black"
-                android:textSize="18sp"
+                style="@style/StatText"
                 tools:text="Attack 48" />
 
         </LinearLayout>
@@ -75,11 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/defense_background"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="16dp"
-                android:textColor="@color/text_black"
-                android:textSize="18sp"
+                style="@style/StatText"
                 tools:text="Defense 43" />
 
             <TextView
@@ -88,11 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/speed_background"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:padding="16dp"
-                android:textColor="@color/text_black"
-                android:textSize="18sp"
+                style="@style/StatText"
                 tools:text="Speed 80" />
 
 
