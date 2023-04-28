@@ -1326,6 +1326,211 @@ app:layout_collapseMode="pin"
 
 **IMPORTANTE: Para que la toolbar se vea y no quede tapada por la imagen y o progres bar debe ir debajo de los mismos en el CollapsingToolbarLayout. Caso contrario no se va a a ver pero si apretan donde debería estar va a tener la función.** 
 
+-----------------------------
+
+**FloatingActionButton**: Un botón redondo, con cierta elevación que nos permité tenerlo siempre presente mas allá del scroll. En general se suele ubicar en la parte inferior derecha de la pantalla. Suele usarse como botón principal de nuestra app (ejemplo el botón que antes era para agregar envíos en Logistics & Extra App y ahora es para cambiar a la visualización de Mapa)
+
+1- El mismo se integrá dentro del CoordinatorLayout, es de tipo wrap_content y wrap_content y aparece por default en el extremo superior izquierdo de la pantalla. Para cambiar la ubicación debemos usar el lyout_gravity definiendo la misma como "bottom|end" y le vamos a dar un margen de 16dp mas otras modificaciones de estilo a consultar en codigo. 
+
+2- Luego le vamos a agregar la imagen de play que primero debemos cargarla en drawable como un nuevo vector asset. Para agregarselo se hace igual que con un ImageView. Es decir con el parametro src. Le ponemos un id
+
+3- Vamos a PokemonDetailFragment que es donde tenemos la logica de este fragment y allí creamos una variable para identificar el boton primero y luego usarlo para reproducir el sonido del pokemon que era el objetivo. 
+
+```kotlin
+package com.example.pokemoskotlin
+
+import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toolbar
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.example.pokemoskotlin.databinding.FragmentPokemonDetailBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
+class PokemonDetailFragment : Fragment() {
+
+    private lateinit var imageView: ImageView
+    private lateinit var hpText: TextView
+    private lateinit var attackText: TextView
+    private lateinit var defenseText: TextView
+    private lateinit var speedText: TextView
+    private lateinit var loadingWheel: ProgressBar
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    private lateinit var floatingActionButton: FloatingActionButton
+
+    private val args: PokemonDetailFragmentArgs by navArgs()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = FragmentPokemonDetailBinding.inflate(inflater)
+
+        val pokemon = args.pokemon
+
+        imageView = view.fragmentDetailImage
+        hpText = view.fragmentDetailHp
+        attackText = view.fragmentDetailAttack
+        defenseText = view.fragmentDetailDefense
+        speedText = view.fragmentDetailSpeed
+        loadingWheel = view.loadingWheel
+
+        toolbar = view.detailToolbar
+
+        // Seteo el nombre de mi nueva view acá y mando a llamar setPokemonData con el pokemon que me traigo de navigation
+        toolbar.title = pokemon.name
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
+        toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        // Defino a mi floatingActiongButton:
+        floatingActionButton = view.playFab
+
+        floatingActionButton.setOnClickListener {
+            val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+            mediaPlayer.start()
+        }
+
+        // Seteo el resto de los datos de mi fragment con el metodo que tengo abajo.
+        setPokemonData(pokemon)
+
+        return view.root
+    }
+
+    private fun setPokemonData(pokemon: Pokemon) {
+
+        loadingWheel.visibility = View.VISIBLE
+        // Podemos usar this, porque Glide admite fragments:
+        Glide.with(this).load(pokemon.imageUrl)
+            .listener(object: RequestListener<Drawable> {
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    imageView.setImageResource(R.drawable.ic_image_not_supported_black)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    loadingWheel.visibility = View.GONE
+                    return false
+                }
+            })
+            .error(R.drawable.ic_image_not_supported_black)
+            .into(imageView)
+
+        hpText.text = getString(R.string.hp_format, pokemon.hp)
+        attackText.text = getString(R.string.attack_format, pokemon.attack)
+        defenseText.text = getString(R.string.defense_format, pokemon.defense)
+        speedText.text = getString(R.string.speed_format, pokemon.speed)
+
+        // val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+        // mediaPlayer.start()
+    }
+}
+```
+
+El color del botón lo está tomando del 
+name="colorAccent">#FEC109
+de color. Para cambiar el color debemos poner el parametro. Así por ejemplo: android:backgroundTint="@color/colorPrimaryDark"
+
+-----------------------
+
+**Animaciones para paso de un fragment al otro.** 
+
+Por ejemplo, que el detail venga desde la derecha a la izquierda y cuando volvemos el listado venga de la izquierda a la derecha. 
+
+1- En res / new / android resources directory creamos una carpeta de type anim
+
+2- Las animaciones se establecen con archivos xml dentro de la carpeta que acabamos de crear.  
+
+Ejemplo de una: 
+
+enter_from_left.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false">
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromXDelta="-100%"
+        android:fromYDelta="0%"
+        android:toXDelta="0%"
+        android:toYDelta="0%" />
+</set>
+```
+
+Voy a configurar 3 mas, uno para enter from right, otro para exit_to_right y el ultimo para el exit_to_left
+
+En los mismos la estructura es exactamente la misma. Se especifica desde done y hacia donde se realiza el desplazamiento o translate en el tipo translate de anim.
+
+3- Para implementar las animaciones debemos ir al main_nav_grafh.xml y allí en el action donde especificamos de que fragmente vamos hacia que otro fragment vamos a agregar nuestras animaciones así:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.example.pokemoskotlin.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonDetailFragment"
+        android:name="com.example.pokemoskotlin.PokemonDetailFragment"
+        android:label="fragment_pokemon_detail"
+        tools:layout="@layout/fragment_pokemon_detail" >
+        <argument
+            android:name="pokemon"
+            app:argType="com.example.pokemoskotlin.Pokemon" />
+    </fragment>
+</navigation>
+```
+
+enterAnim y exitAnim son respectivamente que desplazamiento queremos para el fragment que ingresa y cual para el fragment que sale. 
+
+popEnterAnim y popExitAnim son respectivamente que desplazamiento queremos para el fragment que ingresa y para el que sale pero cuando realizamos la acción de volver hacía atras mediante la flecha en el toolbar o mediante la flecha del OS. 
+
+FIN DE LA PARTE DE DISEÑO.
+
+------------------------------------
+
 
 
 

@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.pokemoskotlin.databinding.FragmentPokemonDetailBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PokemonDetailFragment : Fragment() {
 
@@ -28,6 +29,7 @@ class PokemonDetailFragment : Fragment() {
     private lateinit var speedText: TextView
     private lateinit var loadingWheel: ProgressBar
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    private lateinit var floatingActionButton: FloatingActionButton
 
     private val args: PokemonDetailFragmentArgs by navArgs()
     override fun onCreateView(
@@ -53,6 +55,13 @@ class PokemonDetailFragment : Fragment() {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
+        }
+
+        // Defino a mi floatingActiongButton:
+        floatingActionButton = view.playFab
+        floatingActionButton.setOnClickListener {
+            val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+            mediaPlayer.start()
         }
 
         // Seteo el resto de los datos de mi fragment con el metodo que tengo abajo.
@@ -98,7 +107,7 @@ class PokemonDetailFragment : Fragment() {
         defenseText.text = getString(R.string.defense_format, pokemon.defense)
         speedText.text = getString(R.string.speed_format, pokemon.speed)
 
-        val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
-        mediaPlayer.start()
+        // val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+        // mediaPlayer.start()
     }
 }
