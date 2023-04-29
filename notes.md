@@ -1639,6 +1639,345 @@ Al inicio la actualización de la versión la puedes hacer manualmente sin probl
 
 ----------------------------
 
+**Trabajar con mapas en nuestra app**
+
+1- New Project -> Google Maps Activity -> Finished y se crea el proyecto. 
+
+2- Necesitamos una API Key para usar Maps de Google, tal como lo hice hace poco con Google Colab para usarlo. Desde el archivo google_maps_api.xml se nos especifica donde obtener la Key, como comienza la misma y donde debemos pegar la misma. La llave no debería compartirse con otros ususarios. 
+
+3- Usar Fake GPS sirve para poder simular ubicaciones para nuestro dispositivo. Luego de cambiar la ubicación Fake GPS nos cambia la ubicación en nuestro Google Maps. 
+
+Podemos encontrar un proyecto creado usando fragment con mapas en este link: 
+
+https://github.com/hackaprende/android-kotlin-radar-de-tacos
+
+4- La Map Activity generada por Android Studio por default viene dentro de un fragment, lo que nos da la posibilidad de combinar ese fragment con otro y armar una pantalla cuyo contenido sea el mapa y algo mas. Por ejemplo Logistics App. 
+
+5- Dentro de las clases de las que hereda un MapsActivity debe estar siempre la interface OnMapReadyCallback. Así como también debemos sobreescribir el metodo onMapReady de dicha interface. 
+
+6- La View ya viene por defecto con un "marcador" en la posición en la que se encuentra el usuario. Para establecer este marcador  googleMap usa el metodo addMarker(MarkerOptions().position(sydney).title("Marker ir Sydney)) donde sydney es una variable de tipo geografica compuesta por una latitud y una longitud. 
+
+7- Desde el metodo de googleMap.moveCamera(CameraUpdateFactory.newLatLongZoom(sydney, 13.0f)) yo puedo modificar el zoom por default con el que viene la vista de mapa. 
+
+-----------------------------------
+
+**Agregando nuestros propios marcadores. Ej: Tacos o Coches.** 
+
+1- Creo una clase para un marcador. Ej: taquería
+
+2- Obtengo todos los elementos para construir mis objetos taquerias y los meto en una lista. 
+
+3- Mis objetos deben tener coordenadas geograficas para poder ser ubicados. 
+
+4- Una vez que el mapa ya fue creado por el metodo sobre escrito onMapReady() voy a tomar cada uno de mis objetos de mi lista para representarlo en mi mapa pero con un logo distinto. ¿Como? Iterando sobre mi lista de taquerias para extraer de cada una de ellas por un lado un par lat long y por otro lado el nombre. Luego paso en position el par de lat long y en title el nombre de mi taquería. Quedaría algo así mi func:
+
+```kotlin
+override fun onMapReady(googleMap: GoogleMap) {
+    mMap = googleMap
+
+    //Uso el metodo que creo debajo para obtener mi icono de marcador en el formato adecuado:
+    val icon: BitmapDescriptor = getTacoIcon()
+
+    // Agrego las marcas de mis taquerías
+    for (taqueria in taquerias) {
+        val tacoPosition = LatLng(taqueria.latitude, taqueria.longitude)
+        val taconame = taqueria.name
+
+        val markerOptions = arkerOPtions().position(tacoPosition).title(tacoName).icon(icon)
+        mMap.addMarker(markerOptions)
+    }
+
+    // Agrego la marca de mi ubicación:
+    val sydney = LatLng(-34.0, 151.0)
+    mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydne"))
+    // Fijo un zoom distinto al que viene por default en mi mapa. 
+    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13.0f))
+}
+
+```
+
+5- Si queremos mostrar nuestros puntos con un icono distinto al icono de posición que usa Google Maps por default entonces tenemos que primero cargarlo en Drawable para luego poder llamarlo en el codigo Kotlin. 
+
+6- el .icon() debemos sumarlo al final del MarkerOptions y debe ser de tipo BitmapDescriptor pero lo que nosotros tenemos es un Drawable. Por lo que primero tenemos que convertir el Drawable en un Bitmap Descriptor. Para eso podemos usar el siguiente metodo: 
+
+```kotlin
+private fun getTacoIcon(): BitmapDescriptor {
+    val drawable: Drawable? = ContextCompat.getDrawable(context: this, R.drawable.ic_taco)
+    drawable?.setBounds(left:0, top:0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    val bitmap: Bitmap! = Bitmap.createBitmap(width: drawable?.intrinsicWidth ?: 0,
+        height: drawable?.intrinsicHeight ?:0, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    drawable?.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+```
+
+**Listo! Con esto ya tendremos nuestros iconos de ubicaciones completamente personalizados!!!**
+
+-------------------------------------------
+
+**¿Como tomar la ubicación del usuario y mostrarla también en el mapa? Pidiendo permiso de ubicación**
+
+1- Debemos pedir permisos explicitos. Recordemos el permiso que debemos pedir para traer datos de internet. Esto se carga como permiso en nuestro AndroidManifiest.xml así: 
+
+```xml
+<uses-permission android:name="android.permission.INTERNET/>
+```
+Para pedir permiso para usar la ubicación del usuario debemos poner en el manifest el siguiente permiso. 
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION/>
+```
+
+Existe otro permiso para usar GPS que no es tan preciso y que se llama ACCESS_COARSE_LOCATION pero es una ubicación mucho mas relativa que consume menos recursos pero nos da menos precisión. 
+
+Es importante comprender que ademas de implementar en el manifiest el permiso de ubicación debemos preguntale en la Activity al usuario su consentimiento para que tomemos su ubicación. Esto es codigo kotlin que se debe desarrollar en nuestra MainActivity.kt
+
+Para esto vamos a crear un metodo en MainActivity y llamar al mismo en el onCreate() dado que de esta forma podremos desde el momento mismo en el que se crea la activity obtener el consentimiento del usuario para usar su ubicación. 
+
+```kotlin
+private const val LOCATION_PERMISSION_REQUEST_CODE = 2000
+private const val DEFAULT_MAP_SCALE = 13.0f
+
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private lateinit var mMap: GoogleMap
+    private val taquerias = mutableListOf<Taqueria>()
+    private lateinit var tacoIcon: BitmapDescriptor
+    private val userLocation = Location("")
+    private lateinit var myLocationButton: FloatingActionButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_maps)
+
+        myLocationButton = findViewById(R.id.my_location_button)
+        taquerias.add(Taqueria("Tacos de Asada", -33.954044, 151.241283))
+        taquerias.add(Taqueria("Tacos de Pastor", -33.967154, 151.264715))
+        taquerias.add(Taqueria("Tacos de Cochinita", -33.9438208,151.2436039))
+        taquerias.add(Taqueria("Tacos de Barbacoa", -33.936577, 151.259410))
+        taquerias.add(Taqueria("Tacos de Birria", -33.9362557,151.2392932))
+        taquerias.add(Taqueria("Burritos", -33.938594, 151.224316))
+
+        tacoIcon = getTacoIcon()
+
+        checkLocationPermission()
+    }
+
+    private fun checkLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getUserLocation()
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            }
+        } else {
+            getUserLocation()
+        }
+    }
+
+    // Aseguramos que para que esto se ejecute el usuario nos debe haber dado el permiso adecuado:
+    @SuppressLint("MissingPermission")
+    private fun getUserLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                userLocation.latitude = location.latitude
+                userLocation.longitude = location.longitude
+                setupMap()
+            }
+        }
+    }
+
+
+    // Vamos a crear el mapa recien cuando ya obtuvimos la ubicación del usuario primero. 
+    private fun setupMap() {
+        val mapFragment = supportFragmentManager
+                .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+    
+    // Estamos seguros que este metodo se va a ejecutar si tenemos una versión M o superior. Dado que lo invocamos luego de un IF que valida esto. Esto significa la anotación de abajo:
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                getUserLocation()
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                showLocationPermissionRationaleDialog()
+            } else {
+                finish()
+            }
+        }
+    }
+
+    // Estamos seguros que este metodo se va a ejecutar si tenemos una versión M o superior. Dado que lo invocamos luego de un IF que valida esto. Esto significa la anotación de abajo:
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun showLocationPermissionRationaleDialog() {
+        val dialog = AlertDialog.Builder(this)
+                .setTitle(R.string.need_location_permission_dialog_title)
+                .setMessage(R.string.need_location_permission_dialog_message)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            LOCATION_PERMISSION_REQUEST_CODE)
+                }.setNegativeButton(R.string.no) { _, _ ->
+                    finish()
+                }
+        dialog.show()
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        val userLatLng = LatLng(userLocation.latitude, userLocation.longitude)
+        val userMarker = MarkerOptions().position(userLatLng)
+        mMap.addMarker(userMarker)
+
+        for (taqueria in taquerias) {
+            val tacoPosition = LatLng(taqueria.latitude, taqueria.longitude)
+
+            // Obteniendo la distancia entre la ubicación del usuario y la de las taquerías:
+            val tacoLocation = Location("")
+            tacoLocation.latitude = taqueria.latitude
+            tacoLocation.longitude = taqueria.longitude
+
+            // Esta distancia que calculamos es en Metros y de tipo flotante: 
+            val distanceToTaco = tacoLocation.distanceTo(userLocation)
+
+            // Ademas del nombre ahora voy a mostrar la distancia del user contra la taquería. 
+            val tacoMarkerOptions = MarkerOptions()
+                    .icon(tacoIcon)
+                    .position(tacoPosition)
+                    .title(taqueria.name)
+                    .snippet(getString(R.string.distance_to_format, distanceToTaco))
+            mMap.addMarker(tacoMarkerOptions)
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_MAP_SCALE))
+
+        // Seteo la acción de mi botón principal que en general en una vista de mapa es siempre centrar. 
+        myLocationButton.setOnClickListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_MAP_SCALE))
+        }
+    }
+
+    private fun getTacoIcon(): BitmapDescriptor {
+        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_taco)
+        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(drawable?.intrinsicWidth ?: 0,
+                drawable?.intrinsicHeight ?: 0, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable?.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+}
+```
+
+**requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)**
+
+Esta es la parte donde pedimos los permisos. En el arrayOf deeriamos meter todos los permisos que necesitamos si ademas de acceder a la ubicación necesitaramos por ejemplo acceder a la camara. 
+
+Una vez que tenemos los permisos podemos obtener la ubicación con la función getUserLocation()
+
+Para poder obtener la ubicación vamos a necesitar agregar una nueva dependencia que nos posibilité usar la clase **LocationServices**
+
+distance_to_format es un formato seteado en strings.xml para mostrar de forma clara y concisa la distancia entre la ubicación del user y las taquerías. Se seteó de esta manera:
+
+```xml
+<string name="distance_to_format">A %.2f m</string>
+```
+
+-------------------------------------------------------
+
+**¿Como agregar el boton que sin importar en donde estés te lleva directamente a tu ubicación?**
+
+**Este botón también te poné un zoom por default.**
+
+1- Voy a ir al layout de mi activity_map y voy a encerrar a mi fragment dentro de un FrameLayout
+
+2- Agrego en build.gradle (app) la dependencia que me permite agregar el FloatingActionButton
+
+```gradle
+implementation 'com.google.android.material:material:1.2.1'
+```
+
+3- Agrego una View de tipo FloatingActionButton debajo de mi fragment
+
+4- Le asigno a mi Floating el "src" de la imagen que quiero mostrar en el mismo. Esto depende segun la función de mi app. Por ejemplo en esta app de pokemon yo le estoy poniendo un logo de play pero en una app que usa el botón sobre un mapa le voy a poner el logo de "centrar en el mapa". El src primero lo tengo agregar como un vector asset y buscarlo entre los clips arts que Android Studio ya trae por default. 
+
+Así queda mi activity_maps.xml entonces: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/my_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_baseline_my_location_24" />
+</FrameLayout>
+```
+
+5- Vamos a ir ahora de nuevo a MapsActivity y vamos a crear el boton como private lateinit var y luego en onCreate lo inicializamos ubicando la View de la Activity o Fragment que nos queremos traer. Esto lo podemos hacer con o sin dataBinding. Ver codigo de MapsActivity arriba que ya está completo. 
+
+6- Luego le ponemos un setOnclickListener{} a nuestro boton que cuando se ejecuta deba cambiar el zoom y volver a la ubicación del user. Solo que en lugar usar el metodo moveCamera() vamos a usar animatedCamera() que hace el desplazamiento mostrandonos el recorrido de dicho desplazamiento de forma rapida.
+
+```kotlin
+// Seteo la acción de mi botón principal que en general en una vista de mapa es siempre centrar. 
+myLocationButton.setOnClickListener {
+    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_MAP_SCALE))
+}
+```
+
+**Con esto ya sabemos como construir un fragment o activity que funcione con mapas, geolocalizaciones del usuario y otros objetos, medir distancias, ponerle boton principal de centrado, etc.**
+
+----------------------------------------
+
+**Como implementar POST, PUT y DELETE en Retrofit**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
