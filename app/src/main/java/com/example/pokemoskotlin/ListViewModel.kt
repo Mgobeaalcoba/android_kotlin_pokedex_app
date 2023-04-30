@@ -1,9 +1,11 @@
 package com.example.pokemoskotlin
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokemoskotlin.api.service
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +25,11 @@ class ListViewModel: ViewModel() {
 
     private suspend fun reloadPokemon(): MutableList<Pokemon> {
         return withContext(Dispatchers.IO) {
+
+            val pokemonListPokeApiString = service.get151FirstPokemon()
+
+            Log.d("PokeApi", pokemonListPokeApiString)
+
             val pokemonList =  mutableListOf(
 
                 Pokemon(1, "Bulbasaur", 45, 49,

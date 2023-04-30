@@ -1,3 +1,3 @@
 package com.example.pokemoskotlin.api
 
-class PokemonListJsonResponse ()
+class PokemonListJsonResponse (val pokemonIdList: List<PokemonId>)

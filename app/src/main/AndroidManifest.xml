@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso para internet agregado a nuestra app para consumir el servidor de PokeApi -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
