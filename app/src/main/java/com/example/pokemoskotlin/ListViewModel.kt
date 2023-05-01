@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemoskotlin.api.PokemonId
 import com.example.pokemoskotlin.api.service
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ListViewModel: ViewModel() {
@@ -41,7 +41,7 @@ class ListViewModel: ViewModel() {
             val pokemonListString = mutableListOf<String>()
 
             // Itero mi array de pokemons traidos de PokeApi para armar mis objetos:
-            for (i in 0 until 3) {
+            for (i in 0 until resultJsonArray.length()) {
                 // Separo al primero de los objetos json traidos desde PokeApi:
                 val pokeJsonObject = resultJsonArray[i] as JSONObject
 
@@ -49,11 +49,21 @@ class ListViewModel: ViewModel() {
                 val name = pokeJsonObject.getString("name")
 
                 // Traigo los datos de mi pokemon pegarle nuevamente a mi API y traer los datos de mi id:
-                val pokeTest = service.getPokemonById(name)
+                val pokemonString = service.getPokemonById(name)
 
-                Log.d("PokeApi3", pokeTest)
+                // Agrego mi pokemonString a una lista de pokemon´s strings:
+                pokemonListString.add(pokemonString)
             }
 
+            //Log.d("ListString", pokemonListString.toString())
+
+            // Convierto mi lista de pokemon´s strings a un unico string para parsearlo de forma mas rapida
+            //val stringPokemonListString = pokemonListString.joinToString(",")
+
+            // Paso mi string unico a la función de parseo:
+            val apiPokemonList = parsePokemonListPokeApi(pokemonListString.toString())
+
+            // Lista hardcodeada temporal que luego de parsear voy a eliminar para envíar la que corresponde
             val pokemonList =  mutableListOf(
 
                 Pokemon(1, "Bulbasaur", 45, 49,
@@ -105,32 +115,31 @@ class ListViewModel: ViewModel() {
         }
     }
 
-    private suspend fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<Pokemon> {
+    private fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<Pokemon> {
         // Convierto mi String en un JSON object:
-        val pokemonListJsonObject = JSONObject(pokemonListPokeApiString)
+        val pokemonListJsonArray = JSONArray(pokemonListPokeApiString)
 
-        // Armo un array de los pokemon´s id que vienen un mi json:
-        val resultJsonArray = pokemonListJsonObject.getJSONArray("results")
-        Log.d("PokeApi2", resultJsonArray.toString())
+        // Imprimo mi array por LogCat para ver si está como quiero:
+        Log.d("PokeApi2", pokemonListJsonArray.toString())
 
         // Armo la lista vacia que al final voy a devolver con mis pokemones parseados:
         val pokemonList = mutableListOf<Pokemon>()
 
         // Itero mi array de pokemons traidos de PokeApi para armar mis objetos:
-        for (i in 0 until 3) {
+        //for (i in 0 until 3) {
             // Separo al primero de los objetos json traidos desde PokeApi:
-            val pokeJsonObject = resultJsonArray[i] as JSONObject
+            //val pokeJsonObject = pokemonListJsonArray[i] as JSONObject
 
             // Ahora vamos a ir guardando la información del pokemon para luego armar nuestro objeto:
-            val id = pokeJsonObject.getString("name")
+            //val id = pokeJsonObject.getString("name")
 
-            Log.d("PokeName", id)
+            //Log.d("PokeName", id)
 
             // Ejecuto mi Coroutine IO para pegarle nuevamente a mi API y traer los datos de mi id:
             //val pokeTest = getPokemonFromServer(id)
 
             //Log.d("PokeApi3", pokeTest)
-        }
+        //}
 
         return pokemonList
     }
