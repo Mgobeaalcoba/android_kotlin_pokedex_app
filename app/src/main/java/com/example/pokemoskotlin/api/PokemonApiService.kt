@@ -16,8 +16,8 @@ interface PokemonApiService {
 
     // Como esta función la vamos a ejecutar desde una Coroutine (Hoy en el ViewModel)
     // entonces debe ser una suspend fun.
-    @GET("pokemon/{id}")
-    suspend fun getPokemonById(@Header("id") id: String): String
+    @GET("pokemon/{name}")
+    suspend fun getPokemonById(@Header("name") name: String): String
 
 }
 
