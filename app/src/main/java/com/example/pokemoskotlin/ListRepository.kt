@@ -2,12 +2,13 @@ package com.example.pokemoskotlin
 
 import android.util.Log
 import com.example.pokemoskotlin.api.service
+import com.example.pokemoskotlin.database.PokemonDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ListRepository {
+class ListRepository(private val database: PokemonDatabase) {
     // Debe llevar el codigo de conexión con nuestro servidor que sin el repo está en ViewModel:
     // reloadPokemon deja de ser private dado que será usada desde el ViewModel.
     suspend fun reloadPokemon(): MutableList<Pokemon> {
@@ -47,10 +48,14 @@ class ListRepository {
             // Paso mi string unico a la función de parseo:
             val apiPokemonList = parsePokemonListPokeApi(pokemonListString.toString())
 
-            // Imprimo un log para ver mi lista de objetos:
-            Log.d("ListObjectPokemon", apiPokemonList.toString())
+            // Abro mi database e inserto los datos traidos desde PokeApi:
+            database.pokemonDao.insertAll(apiPokemonList)
 
-            apiPokemonList
+            // Ya no voy a enviar entonces mis datos a pintar desde la API:
+            // apiPokemonList
+
+            // Sino que los voy a mandar a pintar desde la database:
+            database.pokemonDao.getPokemones()
         }
     }
 

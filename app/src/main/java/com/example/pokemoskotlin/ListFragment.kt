@@ -44,7 +44,9 @@ class ListFragment : Fragment() {
         recycler.layoutManager = LinearLayoutManager(requireActivity())
 
         // Traigo mi ViewModel creado al ListFragment
-        val listViewModel = ViewModelProvider(this).get(ListViewModel::class.java)
+        // IMPORTANTE: Para pasarle el contexto al ViewModel necesario para instanciar una database debemos usar "requireActivity().application"
+        // dado que el applicatión es del Activity y no del Fragment.
+        val listViewModel = ViewModelProvider(this  , ListViewModelFactory(requireActivity().application)).get(ListViewModel::class.java)
 
         // Challenge: Crear el adaptar para nuestro recycler!!!
         val adapter = PokemonAdapter()
