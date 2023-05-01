@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pokemoskotlin.api.WorkerUtil
 import com.example.pokemoskotlin.databinding.FragmentListBinding
 
 class ListFragment : Fragment() {
@@ -42,6 +43,9 @@ class ListFragment : Fragment() {
         // Para el layout manager en la activity pasabamos this como contexto. Pero el fragment no tiene contexto por si solo.
         // Debemos pedirle el contexto a la activity
         recycler.layoutManager = LinearLayoutManager(requireActivity())
+
+        // Llamamos desde aquí al WorkerUtil para que programé la actualización de este fragment:
+        WorkerUtil.scheduleSync(requireActivity())
 
         // Traigo mi ViewModel creado al ListFragment
         // IMPORTANTE: Para pasarle el contexto al ViewModel necesario para instanciar una database debemos usar "requireActivity().application"

@@ -59,6 +59,12 @@ class ListRepository(private val database: PokemonDatabase) {
         }
     }
 
+    suspend fun reloadPokemonFromDb(): MutableList<Pokemon> {
+        return withContext(Dispatchers.IO) {
+            database.pokemonDao.getPokemones()
+        }
+    }
+
     // parsePokemonListPokeApi sigue siendo privada dado que es llamada solo desde acá por la func de arriba:
     private fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<Pokemon> {
         // Convierto mi String en un JSON object:
