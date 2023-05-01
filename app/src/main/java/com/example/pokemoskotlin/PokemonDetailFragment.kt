@@ -26,6 +26,8 @@ class PokemonDetailFragment : Fragment() {
     private lateinit var hpText: TextView
     private lateinit var attackText: TextView
     private lateinit var defenseText: TextView
+    private lateinit var specialAttackText: TextView
+    private lateinit var specialDefenseText: TextView
     private lateinit var speedText: TextView
     private lateinit var loadingWheel: ProgressBar
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
@@ -47,6 +49,8 @@ class PokemonDetailFragment : Fragment() {
         defenseText = view.fragmentDetailDefense
         speedText = view.fragmentDetailSpeed
         loadingWheel = view.loadingWheel
+        specialAttackText = view.fragmentDetailSpecialAttack
+        specialDefenseText = view.fragmentDetailSpecialDefense
 
         toolbar = view.detailToolbar
 
@@ -105,7 +109,10 @@ class PokemonDetailFragment : Fragment() {
         hpText.text = getString(R.string.hp_format, pokemon.hp)
         attackText.text = getString(R.string.attack_format, pokemon.attack)
         defenseText.text = getString(R.string.defense_format, pokemon.defense)
+        specialAttackText.text = getString(R.string.special_attack_format, pokemon.specialAttack)
+        specialDefenseText.text = getString(R.string.special_defense_format, pokemon.specialDefense)
         speedText.text = getString(R.string.speed_format, pokemon.speed)
+
 
         // val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
         // mediaPlayer.start()

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokemoskotlin.databinding.PokemonListItemBinding
+import java.util.Locale
 
 class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
     DiffCallback
@@ -41,7 +42,7 @@ class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
         fun bind(pokemon: Pokemon) {
             // pokemon_id / pokemon_name / pokemon_type_image
             binding.pokemonId.text = pokemon.id.toString()
-            binding.pokemonName.text = pokemon.name
+            binding.pokemonName.text = pokemon.name.capitalize()
 
             val imageId = when(pokemon.type) {
                 "grass" -> R.drawable.grass_icon
