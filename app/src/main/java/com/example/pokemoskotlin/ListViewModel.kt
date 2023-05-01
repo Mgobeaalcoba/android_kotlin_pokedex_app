@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokemoskotlin.api.PokemonApi
 import com.example.pokemoskotlin.api.service
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,6 +64,9 @@ class ListViewModel: ViewModel() {
             // Paso mi string unico a la función de parseo:
             val apiPokemonList = parsePokemonListPokeApi(pokemonListString.toString())
 
+            // Imprimo un log para ver mi lista de objetos:
+            Log.d("ListObjectPokemon", apiPokemonList.toString())
+
             // Lista hardcodeada temporal que luego de parsear voy a eliminar para envíar la que corresponde
             val pokemonList =  mutableListOf(
 
@@ -111,35 +115,63 @@ class ListViewModel: ViewModel() {
                     ,R.raw.app_src_main_res_raw_raichu),
             )
 
+            // Imprimo por LogCat la lista Hardcodeada para comparar:
+            Log.d("ListObjectPokemon2", pokemonList.toString())
+
+
             pokemonList
         }
     }
 
-    private fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<Pokemon> {
+    private fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<PokemonApi> {
         // Convierto mi String en un JSON object:
         val pokemonListJsonArray = JSONArray(pokemonListPokeApiString)
 
         // Imprimo mi array por LogCat para ver si está como quiero:
-        Log.d("PokeApi2", pokemonListJsonArray.toString())
+        // Log.d("PokeApi2", pokemonListJsonArray.toString())
 
         // Armo la lista vacia que al final voy a devolver con mis pokemones parseados:
-        val pokemonList = mutableListOf<Pokemon>()
+        val pokemonList = mutableListOf<PokemonApi>()
 
         // Itero mi array de pokemons traidos de PokeApi para armar mis objetos:
-        //for (i in 0 until 3) {
+        for (i in 0 until pokemonListJsonArray.length()) {
             // Separo al primero de los objetos json traidos desde PokeApi:
-            //val pokeJsonObject = pokemonListJsonArray[i] as JSONObject
+            val pokeJsonObject = pokemonListJsonArray[i] as JSONObject
+
+            //Log.d("PokeJsonObjetc", pokeJsonObject.toString())
 
             // Ahora vamos a ir guardando la información del pokemon para luego armar nuestro objeto:
-            //val id = pokeJsonObject.getString("name")
+            val name = pokeJsonObject.getString("name")
+            val id = pokeJsonObject.getInt("id")
+            val statsArray = pokeJsonObject.getJSONArray("stats")
+            val hp = statsArray.getJSONObject(0).getInt("base_stat")
+            val attack = statsArray.getJSONObject(1).getInt("base_stat")
+            val defense = statsArray.getJSONObject(2).getInt("base_stat")
+            val specialAttack = statsArray.getJSONObject(3).getInt("base_stat")
+            val specialDefense = statsArray.getJSONObject(4).getInt("base_stat")
+            val speed = statsArray.getJSONObject(5).getInt("base_stat")
+            val typesArray = pokeJsonObject.getJSONArray("types")
+            val type = typesArray.getJSONObject(0).getJSONObject("type").getString("name")
+            val spritesObject = pokeJsonObject.getJSONObject("sprites")
+            val otherObject = spritesObject.getJSONObject("other")
+            val officialArtwork = otherObject.getJSONObject("official-artwork")
+            val imageUrl = officialArtwork.getString("front_default")
+            val soundId = R.raw.pokemon_battle
 
-            //Log.d("PokeName", id)
+            // Armamos nuestro objeto PokemonApi que es una clase transitoria:
+            val pokemon = PokemonApi(id,name,hp,attack,defense,specialAttack,specialDefense,speed,type,imageUrl,soundId)
+
+            // Agrego el pokemon creado a mi lista:
+            pokemonList.add(pokemon)
+
+
+            Log.d("PokemonApiObject", pokemon.toString())
 
             // Ejecuto mi Coroutine IO para pegarle nuevamente a mi API y traer los datos de mi id:
             //val pokeTest = getPokemonFromServer(id)
 
             //Log.d("PokeApi3", pokeTest)
-        //}
+        }
 
         return pokemonList
     }

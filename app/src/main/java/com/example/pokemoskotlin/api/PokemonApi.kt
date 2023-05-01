@@ -1,8 +1,11 @@
 package com.example.pokemoskotlin.api
 
-import com.example.pokemoskotlin.Pokemon
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class PokemonApi (
-    val id: Long, val name: String, val hp: Int, val attack: Int, val defense: Int,
-    val speed: Int, val type: Pokemon.PokemonType, val imageUrl: String
-)
+@Parcelize
+data class PokemonApi (
+    val id: Int, val name: String, val hp: Int, val attack: Int, val defense: Int,
+    val specialAttack: Int, val specialDefense: Int,
+    val speed: Int, val type: String, val imageUrl: String, val soundId: Int
+): Parcelable
