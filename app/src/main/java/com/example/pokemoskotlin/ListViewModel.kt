@@ -49,9 +49,9 @@ class ListViewModel: ViewModel() {
                 val name = pokeJsonObject.getString("name")
 
                 // Traigo los datos de mi pokemon pegarle nuevamente a mi API y traer los datos de mi id:
-                //val pokeTest = service.getPokemonById(name)
+                val pokeTest = service.getPokemonById(name)
 
-                //Log.d("PokeApi3", pokeTest)
+                Log.d("PokeApi3", pokeTest)
             }
 
             val pokemonList =  mutableListOf(

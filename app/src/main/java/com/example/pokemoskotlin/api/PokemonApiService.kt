@@ -5,6 +5,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 
 
 interface PokemonApiService {
@@ -17,7 +18,7 @@ interface PokemonApiService {
     // Como esta función la vamos a ejecutar desde una Coroutine (Hoy en el ViewModel)
     // entonces debe ser una suspend fun.
     @GET("pokemon/{name}")
-    suspend fun getPokemonById(@Header("name") name: String): String
+    suspend fun getPokemonById(@Path("name") name: String): String
 
 }
 
