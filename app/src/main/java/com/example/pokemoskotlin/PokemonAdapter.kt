@@ -44,11 +44,25 @@ class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
             binding.pokemonName.text = pokemon.name
 
             val imageId = when(pokemon.type) {
-                Pokemon.PokemonType.GRASS -> R.drawable.grass_icon
-                Pokemon.PokemonType.WATER -> R.drawable.water_icon
-                Pokemon.PokemonType.FIRE -> R.drawable.fire_icon
-                Pokemon.PokemonType.FIGHTER -> R.drawable.fight_icon
-                Pokemon.PokemonType.ELECTRIC -> R.drawable.electric_icon
+                "grass" -> R.drawable.grass_icon
+                "water" -> R.drawable.water_icon
+                "fire" -> R.drawable.fire_icon
+                "fighting" -> R.drawable.fight_icon
+                "electric" -> R.drawable.electric_icon
+                "normal" -> R.drawable.normal
+                "flying" -> R.drawable.flying
+                "poison" -> R.drawable.poison
+                "ground" -> R.drawable.ground
+                "rock" -> R.drawable.rock
+                "bug" -> R.drawable.bug
+                "ghost" -> R.drawable.ghost
+                "steel" -> R.drawable.steel
+                "psychic" -> R.drawable.phychic
+                "ice" -> R.drawable.ice
+                "dragon" -> R.drawable.dragon
+                "dark" -> R.drawable.dark
+                "fairy" -> R.drawable.fairy
+                else -> R.drawable.normal
             }
 
             binding.pokemonTypeImage.setImageResource(imageId)
