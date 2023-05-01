@@ -51,10 +51,23 @@ class ListFragment : Fragment() {
         // Challenge: Crear el adaptar para nuestro recycler!!!
         val adapter = PokemonAdapter()
 
-        // Observo la actividad en mi ViewModel
+        // Observo la actividad en la pokemonList de mi ListViewModel
         listViewModel.pokemonList.observe(requireActivity(), Observer {
             pokemonList ->
             adapter.submitList(pokemonList)
+        })
+
+        // Observo la actividad de el status de mi ListViewModel
+        listViewModel.status.observe(requireActivity(), Observer {
+            // a apiResponseStatus la estoy creando en este lambda function:
+                apiResponseStatus ->
+            if (apiResponseStatus == ApiResponseStatus.LOADING) {
+                view.loadingWheel.visibility = View.VISIBLE
+            } else if (apiResponseStatus == ApiResponseStatus.DONE) {
+                view.loadingWheel.visibility = View.GONE
+            } else if (apiResponseStatus == ApiResponseStatus.ERROR) {
+                view.loadingWheel.visibility = View.GONE
+            }
         })
 
         view.pokemonRecycler.adapter = adapter
@@ -62,7 +75,6 @@ class ListFragment : Fragment() {
         adapter.onItemClickListener = {
             pokemonSelectListener.onPokemonSelected(it)
         }
-
 
         return view.root
     }

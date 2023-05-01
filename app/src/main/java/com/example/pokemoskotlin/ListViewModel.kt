@@ -13,14 +13,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.UnknownHostException
 
 // sumó el applicatión para darle el contexto a mi database:
 class ListViewModel(application: Application): ViewModel() {
+
+    private val TAG = "Error_internet"
 
     // Creo mi variable para la lista de pokemones:
     private var _pokemonList = MutableLiveData<MutableList<Pokemon>>()
     val pokemonList : LiveData<MutableList<Pokemon>>
         get() = _pokemonList
+
+    private var _status = MutableLiveData<ApiResponseStatus>()
+    val status: LiveData<ApiResponseStatus>
+        get() = _status
 
     // Instanceo a mi base de datos para luego pasarla al repository:
     private val database = getDatabase(application.applicationContext)
@@ -30,7 +37,14 @@ class ListViewModel(application: Application): ViewModel() {
 
     init {
         viewModelScope.launch {
-            _pokemonList.value = repository.reloadPokemon()
+            try {
+                _status.value = ApiResponseStatus.LOADING
+                _pokemonList.value = repository.reloadPokemon()
+                _status.value = ApiResponseStatus.DONE
+            } catch (e: UnknownHostException) {
+                _status.value = ApiResponseStatus.NOT_INTERNET_CONEXTION
+                Log.d(TAG, "No internet conexion")
+            }
         }
     }
 }
