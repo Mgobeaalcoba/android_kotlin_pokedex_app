@@ -13,6 +13,8 @@ Algunos de los temas trabajados en esta app son:
 
 <br>
 
+### Imagenes del proyecto
+
 <div style="display:flex;">
   <img src="images/app_pokeapi_1.png" alt="Captura 1" style="margin-right:10px; max-width:50%; height: auto;">
   <img src="images/app_pokeapi_2.png" alt="Captura 2" style= "max-width:50%; height: auto;">
@@ -20,6 +22,10 @@ Algunos de los temas trabajados en esta app son:
 
 
 <br>
+
+### Video del proyecto: 
+
+![Video de la app funcionando]("./videos/device-2023-05-01-230551.mp4")
 
 ## Instalación
 
