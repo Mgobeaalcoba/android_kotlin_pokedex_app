@@ -1,4 +1,4 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

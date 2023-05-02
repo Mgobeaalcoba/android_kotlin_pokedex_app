@@ -1,4 +1,4 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.api
 
 enum class ApiResponseStatus {
     DONE,

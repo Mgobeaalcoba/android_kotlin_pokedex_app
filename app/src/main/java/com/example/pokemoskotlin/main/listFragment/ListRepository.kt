@@ -1,6 +1,8 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.util.Log
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.R
 import com.example.pokemoskotlin.api.service
 import com.example.pokemoskotlin.database.PokemonDatabase
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,9 @@ class ListRepository(private val database: PokemonDatabase) {
             // Armo la lista vacia en la que al final voy a cargar todos mis consultas individuales.
             val pokemonListString = mutableListOf<String>()
 
+            // Armo la lista vacia en la que voy a guardar las descripciónes de mis pokemones.
+            val pokemonDescriptionListString = mutableListOf<String>()
+
             // Itero mi array de pokemons traidos de PokeApi para armar mis objetos:
             for (i in 0 until resultJsonArray.length()) {
                 // Separo al primero de los objetos json traidos desde PokeApi:
@@ -36,8 +41,17 @@ class ListRepository(private val database: PokemonDatabase) {
                 // Traigo los datos de mi pokemon pegarle nuevamente a mi API y traer los datos de mi id:
                 val pokemonString = service.getPokemonById(name)
 
+                // Traigo la description de mi pokemon:
+                val pokemonDescriptionString = service.getPokemonDescriptionById(name)
+
+                // Imprimo un Log con la descripción para ver que efectivamente llegue
+                // Log.d("Description", pokemonDescriptionString) --> La api responde ok
+
                 // Agrego mi pokemonString a una lista de pokemon´s strings:
                 pokemonListString.add(pokemonString)
+
+                // Agrego mi pokemonDescriptionString a mi lista de descripciones:
+                pokemonDescriptionListString.add(pokemonDescriptionString)
             }
 
             //Log.d("ListString", pokemonListString.toString())
@@ -45,8 +59,8 @@ class ListRepository(private val database: PokemonDatabase) {
             // Convierto mi lista de pokemon´s strings a un unico string para parsearlo de forma mas rapida
             //val stringPokemonListString = pokemonListString.joinToString(",")
 
-            // Paso mi string unico a la función de parseo:
-            val apiPokemonList = parsePokemonListPokeApi(pokemonListString.toString())
+            // Paso mis lists en formato string juntas a la función de parseo:
+            val apiPokemonList = parsePokemonListPokeApi(pokemonListString.toString(), pokemonDescriptionListString.toString())
 
             // Abro mi database e inserto los datos traidos desde PokeApi:
             database.pokemonDao.insertAll(apiPokemonList)
@@ -66,9 +80,12 @@ class ListRepository(private val database: PokemonDatabase) {
     }
 
     // parsePokemonListPokeApi sigue siendo privada dado que es llamada solo desde acá por la func de arriba:
-    private fun parsePokemonListPokeApi(pokemonListPokeApiString: String): MutableList<Pokemon> {
-        // Convierto mi String en un JSON object:
+    private fun parsePokemonListPokeApi(pokemonListPokeApiString: String, pokemonDescriptionListString: String): MutableList<Pokemon> {
+        // Convierto mi primer String en un JSON Array:
         val pokemonListJsonArray = JSONArray(pokemonListPokeApiString)
+
+        // Convierto mi segundo String en un JSON Array:
+        val pokemonDescriptionListJsonArray = JSONArray(pokemonDescriptionListString)
 
         // Imprimo mi array por LogCat para ver si está como quiero:
         // Log.d("PokeApi2", pokemonListJsonArray.toString())
@@ -80,6 +97,7 @@ class ListRepository(private val database: PokemonDatabase) {
         for (i in 0 until pokemonListJsonArray.length()) {
             // Separo al primero de los objetos json traidos desde PokeApi:
             val pokeJsonObject = pokemonListJsonArray[i] as JSONObject
+            val pokeDescriptionJsonObject = pokemonDescriptionListJsonArray[i] as JSONObject
 
             //Log.d("PokeJsonObjetc", pokeJsonObject.toString())
 
@@ -100,9 +118,11 @@ class ListRepository(private val database: PokemonDatabase) {
             val officialArtwork = otherObject.getJSONObject("official-artwork")
             val imageUrl = officialArtwork.getString("front_default")
             val soundId = R.raw.pokemon_battle
+            val formDescriptions = pokeDescriptionJsonObject.getJSONArray("flavor_text_entries")
+            val description = formDescriptions.getJSONObject(0).getString("flavor_text")
 
             // Armamos nuestro objeto PokemonApi que es una clase transitoria:
-            val pokemon = Pokemon(id,name,hp,attack,defense,specialAttack,specialDefense,speed,type,imageUrl,soundId)
+            val pokemon = Pokemon(id,name,hp,attack,defense,specialAttack,specialDefense,speed,type,imageUrl,soundId,description)
 
             // Agrego el pokemon creado a mi lista:
             pokemonList.add(pokemon)

@@ -18,5 +18,6 @@ data class Pokemon (
     val speed: Int,
     val type: String,
     val imageUrl: String,
-    val soundId: Int
+    val soundId: Int,
+    val description: String
 ): Parcelable

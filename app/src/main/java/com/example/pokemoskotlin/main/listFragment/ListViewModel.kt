@@ -1,4 +1,4 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.app.Application
 import android.util.Log
@@ -6,13 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemoskotlin.api.service
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.api.ApiResponseStatus
 import com.example.pokemoskotlin.database.getDatabase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 import java.net.UnknownHostException
 
 // sumó el applicatión para darle el contexto a mi database:

@@ -3,7 +3,7 @@ package com.example.pokemoskotlin.api
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.pokemoskotlin.ListRepository
+import com.example.pokemoskotlin.main.listFragment.ListRepository
 import com.example.pokemoskotlin.database.getDatabase
 
 // Hereda de CoroutineWorker porque traemos los datos en una Coroutine. Sino heredaría de Worker:

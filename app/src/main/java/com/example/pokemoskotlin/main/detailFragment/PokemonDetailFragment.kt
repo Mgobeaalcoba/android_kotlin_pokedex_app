@@ -1,4 +1,4 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.detailFragment
 
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -10,13 +10,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.main.detailFragment.PokemonDetailFragmentArgs
+import com.example.pokemoskotlin.R
 import com.example.pokemoskotlin.databinding.FragmentPokemonDetailBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -32,6 +34,7 @@ class PokemonDetailFragment : Fragment() {
     private lateinit var loadingWheel: ProgressBar
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var floatingActionButton: FloatingActionButton
+    private lateinit var descriptionText: TextView
 
     private val args: PokemonDetailFragmentArgs by navArgs()
     override fun onCreateView(
@@ -43,6 +46,8 @@ class PokemonDetailFragment : Fragment() {
 
         val pokemon = args.pokemon
 
+        val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
+
         imageView = view.fragmentDetailImage
         hpText = view.fragmentDetailHp
         attackText = view.fragmentDetailAttack
@@ -51,6 +56,7 @@ class PokemonDetailFragment : Fragment() {
         loadingWheel = view.loadingWheel
         specialAttackText = view.fragmentDetailSpecialAttack
         specialDefenseText = view.fragmentDetailSpecialDefense
+        descriptionText  = view.descriptionView
 
         toolbar = view.detailToolbar
 
@@ -59,12 +65,12 @@ class PokemonDetailFragment : Fragment() {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
+            mediaPlayer?.stop()
         }
 
         // Defino a mi floatingActiongButton:
         floatingActionButton = view.playFab
         floatingActionButton.setOnClickListener {
-            val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)
             mediaPlayer.start()
         }
 
@@ -112,6 +118,7 @@ class PokemonDetailFragment : Fragment() {
         specialAttackText.text = getString(R.string.special_attack_format, pokemon.specialAttack)
         specialDefenseText.text = getString(R.string.special_defense_format, pokemon.specialDefense)
         speedText.text = getString(R.string.speed_format, pokemon.speed)
+        descriptionText.text = getString(R.string.description_format, pokemon.description)
 
 
         // val mediaPlayer = MediaPlayer.create(requireActivity(), pokemon.soundId)

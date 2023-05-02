@@ -10,7 +10,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".DetailFragment">
+        tools:context=".main.detailFragment.DetailFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                     <ImageView
                         android:id="@+id/fragment_detail_image"
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
+                        android:layout_height="350dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/pokedex" />
 
@@ -141,6 +141,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/description_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"

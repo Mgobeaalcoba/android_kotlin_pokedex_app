@@ -1,4 +1,4 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.content.Context
 import android.os.Bundle
@@ -6,11 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.api.ApiResponseStatus
 import com.example.pokemoskotlin.api.WorkerUtil
 import com.example.pokemoskotlin.databinding.FragmentListBinding
 
@@ -50,7 +50,8 @@ class ListFragment : Fragment() {
         // Traigo mi ViewModel creado al ListFragment
         // IMPORTANTE: Para pasarle el contexto al ViewModel necesario para instanciar una database debemos usar "requireActivity().application"
         // dado que el applicatión es del Activity y no del Fragment.
-        val listViewModel = ViewModelProvider(this  , ListViewModelFactory(requireActivity().application)).get(ListViewModel::class.java)
+        val listViewModel = ViewModelProvider(this  , ListViewModelFactory(requireActivity().application)).get(
+            ListViewModel::class.java)
 
         // Challenge: Crear el adaptar para nuestro recycler!!!
         val adapter = PokemonAdapter()

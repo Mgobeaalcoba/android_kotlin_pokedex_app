@@ -1,12 +1,13 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.R
 import com.example.pokemoskotlin.databinding.PokemonListItemBinding
-import java.util.Locale
 
 class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
     DiffCallback
@@ -28,12 +29,12 @@ class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PokemonAdapter.PokemonViewHolder {
+    ): PokemonViewHolder {
         val binding = PokemonListItemBinding.inflate(LayoutInflater.from(parent.context))
         return PokemonViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PokemonAdapter.PokemonViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = getItem(position)
         holder.bind(pokemon)
     }

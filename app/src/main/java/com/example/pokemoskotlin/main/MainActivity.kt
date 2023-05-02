@@ -1,8 +1,12 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
+import com.example.pokemoskotlin.main.listFragment.ListFragment
+import com.example.pokemoskotlin.main.listFragment.ListFragmentDirections
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.R
 import com.example.pokemoskotlin.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), ListFragment.PokemonSelectListener {

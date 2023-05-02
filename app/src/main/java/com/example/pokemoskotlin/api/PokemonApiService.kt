@@ -1,10 +1,8 @@
 package com.example.pokemoskotlin.api
 
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Path
 
 
@@ -19,6 +17,10 @@ interface PokemonApiService {
     // entonces debe ser una suspend fun.
     @GET("pokemon/{name}")
     suspend fun getPokemonById(@Path("name") name: String): String
+
+    // Con esta función voy a traer las descriptións de mis pokemones:
+    @GET("pokemon-species/{name}")
+    suspend fun getPokemonDescriptionById(@Path("name") name: String): String
 
 }
 
