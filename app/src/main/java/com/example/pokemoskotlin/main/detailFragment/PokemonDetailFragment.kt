@@ -61,7 +61,7 @@ class PokemonDetailFragment : Fragment() {
         toolbar = view.detailToolbar
 
         // Seteo el nombre de mi nueva view acá y mando a llamar setPokemonData con el pokemon que me traigo de navigation
-        toolbar.title = pokemon.name
+        toolbar.title = pokemon.name.capitalize()
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white)
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
