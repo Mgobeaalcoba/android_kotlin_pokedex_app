@@ -10,6 +10,8 @@
     <color name="attack_background">#8F8101</color>
     <color name="defense_background">#AFCDF3</color>
     <color name="speed_background">#F3DB03</color>
+    <color name="special_attack_background">#2196F3</color>
+    <color name="special_defense_background">#B0C880D5</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

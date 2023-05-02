@@ -10,7 +10,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".DetailFragment">
+        tools:context=".main.detailFragment.DetailFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                     <ImageView
                         android:id="@+id/fragment_detail_image"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="350dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/pokedex" />
 
@@ -103,6 +103,32 @@
                         tools:text="Defense 43" />
 
                     <TextView
+                        android:id="@+id/fragment_detail_special_attack"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/special_attack_background"
+                        style="@style/StatText"
+                        tools:text="Special Attack 80" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/fragment_detail_special_defense"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/special_defense_background"
+                        style="@style/StatText"
+                        tools:text="Special Defense 43" />
+
+                    <TextView
                         android:id="@+id/fragment_detail_speed"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -115,6 +141,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/description_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"

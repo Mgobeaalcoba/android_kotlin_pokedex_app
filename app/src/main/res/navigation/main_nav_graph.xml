@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.example.pokemoskotlin.ListFragment"
+        android:name="com.example.pokemoskotlin.main.listFragment.ListFragment"
         android:label="ListFragment" >
         <action
             android:id="@+id/action_listFragment_to_pokemonDetailFragment"
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/pokemonDetailFragment"
-        android:name="com.example.pokemoskotlin.PokemonDetailFragment"
+        android:name="com.example.pokemoskotlin.main.detailFragment.PokemonDetailFragment"
         android:label="fragment_pokemon_detail"
         tools:layout="@layout/fragment_pokemon_detail" >
         <argument

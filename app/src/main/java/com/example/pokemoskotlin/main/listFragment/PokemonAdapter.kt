@@ -1,10 +1,12 @@
-package com.example.pokemoskotlin
+package com.example.pokemoskotlin.main.listFragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokemoskotlin.Pokemon
+import com.example.pokemoskotlin.R
 import com.example.pokemoskotlin.databinding.PokemonListItemBinding
 
 class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
@@ -27,12 +29,12 @@ class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PokemonAdapter.PokemonViewHolder {
+    ): PokemonViewHolder {
         val binding = PokemonListItemBinding.inflate(LayoutInflater.from(parent.context))
         return PokemonViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PokemonAdapter.PokemonViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
         val pokemon = getItem(position)
         holder.bind(pokemon)
     }
@@ -41,14 +43,28 @@ class PokemonAdapter: ListAdapter<Pokemon, PokemonAdapter.PokemonViewHolder>(
         fun bind(pokemon: Pokemon) {
             // pokemon_id / pokemon_name / pokemon_type_image
             binding.pokemonId.text = pokemon.id.toString()
-            binding.pokemonName.text = pokemon.name
+            binding.pokemonName.text = pokemon.name.capitalize()
 
             val imageId = when(pokemon.type) {
-                Pokemon.PokemonType.GRASS -> R.drawable.grass_icon
-                Pokemon.PokemonType.WATER -> R.drawable.water_icon
-                Pokemon.PokemonType.FIRE -> R.drawable.fire_icon
-                Pokemon.PokemonType.FIGHTER -> R.drawable.fight_icon
-                Pokemon.PokemonType.ELECTRIC -> R.drawable.electric_icon
+                "grass" -> R.drawable.grass_icon
+                "water" -> R.drawable.water_icon
+                "fire" -> R.drawable.fire_icon
+                "fighting" -> R.drawable.fight_icon
+                "electric" -> R.drawable.electric_icon
+                "normal" -> R.drawable.normal
+                "flying" -> R.drawable.flying
+                "poison" -> R.drawable.poison
+                "ground" -> R.drawable.ground
+                "rock" -> R.drawable.rock
+                "bug" -> R.drawable.bug
+                "ghost" -> R.drawable.ghost
+                "steel" -> R.drawable.steel
+                "psychic" -> R.drawable.phychic
+                "ice" -> R.drawable.ice
+                "dragon" -> R.drawable.dragon
+                "dark" -> R.drawable.dark
+                "fairy" -> R.drawable.fairy
+                else -> R.drawable.normal
             }
 
             binding.pokemonTypeImage.setImageResource(imageId)
