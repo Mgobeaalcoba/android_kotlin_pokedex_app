@@ -23,10 +23,6 @@ Algunos de los temas trabajados en esta app son:
 
 <br>
 
-### Video del proyecto: 
-
-![Video de la app funcionando]("./videos/device-2023-05-01-230551.mp4")
-
 ## Instalación
 
 Instala la aplicación con los siguientes pasos:
